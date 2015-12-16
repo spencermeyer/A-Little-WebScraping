@@ -2,10 +2,10 @@
 
 // Build a controller
 var express  = require('express');
-var app      = express();                // create our app w/ express
-var morgan = require('morgan');          // log requests to the console (express4)
-// var bodyParser = require('body-parser');    // pull information from HTML POST (express4)
-//var methodOverride = require('method-override'); // simulate DELETE and PUT (express4)
+var fs       = require('fs');
+var request  = require('request');
+var app      = express();           // create our app w/ express
+var morgan   = require('morgan');   // log requests to the console (express4)
 var cheerio = require('cheerio');
 
 // configuration of controller
@@ -18,41 +18,44 @@ app.use(cheerio);
 // app.use(methodOverride());
 
 // Specify application home page
-app.get('/', function(req, res) {
-    res.sendfile('./public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
-});
+//    app.get('/', function(req, res) {
+//        res.sendfile('./public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
+//    });
 
 app.get('/scrape', function(req, res){
-    // The URL we will scrape from - in our example Anchorman 2.
+  // Let's scrape Anchorman 2
+  url = 'http://www.imdb.com/title/tt1229340/';
 
-    url = 'http://www.imdb.com/title/tt1229340/';
+  request(url, function(error, response, html){
+    if(!error){
+      var $ = cheerio.load(html);
+      var title, release, rating;
+      var json = { title : "", release : "", rating : ""};
 
-    // The structure of our request call
-    // The first parameter is our URL
-    // The callback function takes 3 parameters, an error, response status code and the html
+      $('.header').filter(function(){
+            var data = $(this);
+            title = data.children().first().text();
+            release = data.children().last().children().text();
 
-    request(url, function(error, response, html){
+            json.title = title;
+            json.release = release;
+          })
 
-        // First we'll check to make sure no errors occurred when making the request
+          $('.star-box-giga-star').filter(function(){
+            var data = $(this);
+            rating = data.text();
 
-        if(!error){
-            // Next, we'll utilize the cheerio library on the returned html which will essentially give us jQuery functionality
+            json.rating = rating;
+          })
+    }
 
-            var $ = cheerio.load(html);
+    fs.writeFile('output.json', JSON.stringify(json, null, 4), function(err){
+          console.log('File successfully written! - Check your project directory for the output.json file');
+        })
 
-            console.log($);
-
-            // Finally, we'll define the variables we're going to capture
-
-            var title, release, rating;
-            var json = { title : "", release : "", rating : ""};
-        }
-    })
+        res.send('Check your console!')
+  })
 })
-
-
-
-
 
 
 // listen (start app with node busController.js)
