@@ -18,13 +18,46 @@ app.use(cheerio);
 // app.use(methodOverride());
 
 // Specify application home page
-app.get('*', function(req, res) {
+app.get('/', function(req, res) {
     res.sendfile('./public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
 });
 
-var parkdom = cheerio.load('<html><head></head><body><div id="content"><div id="sidebar"></div><div id="main"><div id="breadcrumbs"></div><table id="data"><tr><th>Name</th><th>Address</th></tr><tr><td class="name">John</td><td class="address">Address of John</td></tr><tr><td class="name">Susan</td><td class="address">Address of Susan</td></tr></table></div></div></body></html>');
+app.get('/scrape', function(req, res){
+    // The URL we will scrape from - in our example Anchorman 2.
+
+    url = 'http://www.imdb.com/title/tt1229340/';
+
+    // The structure of our request call
+    // The first parameter is our URL
+    // The callback function takes 3 parameters, an error, response status code and the html
+
+    request(url, function(error, response, html){
+
+        // First we'll check to make sure no errors occurred when making the request
+
+        if(!error){
+            // Next, we'll utilize the cheerio library on the returned html which will essentially give us jQuery functionality
+
+            var $ = cheerio.load(html);
+
+            console.log($);
+
+            // Finally, we'll define the variables we're going to capture
+
+            var title, release, rating;
+            var json = { title : "", release : "", rating : ""};
+        }
+    })
+})
+
+
+
+
 
 
 // listen (start app with node busController.js)
 app.listen(process.env.PORT || 5000);
 console.log("App listening on port 5000 or Heroku env port");
+exports = module.exports = app;
+
+
