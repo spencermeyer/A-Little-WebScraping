@@ -19,41 +19,59 @@ app.use(cheerio);
 
 // Specify application home page
 //    app.get('/', function(req, res) {
-//        res.sendfile('./public/index.html'); // load the single view file (angular will handle the page changes on the front-end)
+//        res.sendfile('./public/index.html');
 //    });
 
 app.get('/scrape', function(req, res){
-  // Let's scrape Anchorman 2
-  url = 'http://www.imdb.com/title/tt1229340/';
+  // Let's scrape
+  
+  var options = {
+      url : 'http://www.parkrun.org.uk/eastleigh/results/latestresults/',
+      headers: {
+        'User-Agent': 'request'
+      }
+    };
 
-  request(url, function(error, response, html){
+  request(options, function(error, response, html){
     if(!error){
       var $ = cheerio.load(html);
+      console.log('loaded webpage eastleigh pr');
       var title, release, rating;
-      var json = { title : "", release : "", rating : ""};
+      var json = { pos : "", parkrunner : "", time : "", agecat : "", agegrade : "", gender : "", genderpos : "", note : "", totalruns : "" };
 
-      $('.header').filter(function(){
-            var data = $(this);
-            title = data.children().first().text();
-            release = data.children().last().children().text();
+  //    $('.sortable').filter(function(){
+  //      var data =$(this);
+  //      console.log("next should be the data");
 
-            json.title = title;
-            json.release = release;
-          })
+      $('table.sortable').each(function(i, element){
+              var a = $(this).children().next().children().children();
+              console.log(a.text());              // the whole data table written
+              json.pos=a.text();                  // writes the entire table into the json.pos(1)
+        //console.log(data.text);
+      });
 
-          $('.star-box-giga-star').filter(function(){
-            var data = $(this);
-            rating = data.text();
+      //json.pos = data;
 
-            json.rating = rating;
-          })
+    //  $('.header').filter(function(){
+    //        var data = $(this);
+    //        title = data.children().first().text();
+    //        release = data.children().last().children().text();
+    //        json.title = title;
+    //        json.release = release;
+    //      })
+
+    //      $('.star-box-giga-star').filter(function(){
+    //        var data = $(this);
+    //        rating = data.text();
+    //        json.rating = rating;
+    //      })
     }
 
     fs.writeFile('output.json', JSON.stringify(json, null, 4), function(err){
-          console.log('File successfully written! - Check your project directory for the output.json file');
-        })
+      console.log('File successfully written! - Check your project directory for the output.json file');
+    });
 
-        res.send('Check your console!')
+    res.send('Check your console!')
   })
 })
 
