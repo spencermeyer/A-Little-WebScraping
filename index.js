@@ -22,6 +22,10 @@ app.use(cheerio);
 //        res.sendfile('./public/index.html');
 //    });
 
+app.get('/', function(req, res){
+  res.sendfile('./public/index.html');
+})
+
 app.get('/scrape', function(req, res){
   // Let's scrape
   
