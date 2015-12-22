@@ -30,11 +30,11 @@ app.get('/scrape', function(req, res){
   // Let's scrape
   
   var options = {
-      url : 'http://www.parkrun.org.uk/eastleigh/results/latestresults/',
-      headers: {
-        'User-Agent': 'request'
-      }
-    };
+    url : 'http://www.parkrun.org.uk/eastleigh/results/latestresults/',
+    headers: {
+      'User-Agent': 'request'
+    }
+  };
 
   request(options, function(error, response, html){
     if(!error){
@@ -43,15 +43,10 @@ app.get('/scrape', function(req, res){
       var title, release, rating;
       var json = { pos : "", parkrunner : "", time : "", agecat : "", agegrade : "", gender : "", genderpos : "", note : "", totalruns : "" };
 
-  //    $('.sortable').filter(function(){
-  //      var data =$(this);
-  //      console.log("next should be the data");
-
-      $('table.sortable').each(function(i, element){
-              var a = $(this).children().next().children().children();
-              console.log(a.text());              // the whole data table written
-              json.pos=a.text();                  // writes the entire table into the json.pos(1)
-        //console.log(data.text);
+      $('table.sortable tbody tr').each(function(i, element){
+        var data = $(this).text();
+        console.log("and the data is", data);  
+        console.log("position", data.slice(0,3));  // this gives back the first 2 characters regardless.  Data here is just a long string
       });
 
       //json.pos = data;
@@ -69,14 +64,14 @@ app.get('/scrape', function(req, res){
     //        rating = data.text();
     //        json.rating = rating;
     //      })
-    }
+}
 
-    fs.writeFile('output.json', JSON.stringify(json, null, 4), function(err){
-      console.log('File successfully written! - Check your project directory for the output.json file');
-    });
+fs.writeFile('output.json', JSON.stringify(json, null, 4), function(err){
+  console.log('File successfully written! - Check your project directory for the output.json file');
+});
 
-    res.send('Check your console!')
-  })
+res.send('Check your console!')
+})
 })
 
 
