@@ -30,13 +30,15 @@ app.get('/scrape', function(req, res){
   // Let's scrape
   
   var options = {
-    url : 'http://www.parkrun.org.uk/eastleigh/results/latestresults/',
+    // url : 'http://www.parkrun.org.uk/eastleigh/results/latestresults/',
+    url : 'http://localhost:5000/public/results_Eastleigh_parkrun',
     headers: {
       'User-Agent': 'request'
     }
   };
 
   request(options, function(error, response, html){
+    if(error){console.log('There was an error', error)};
     if(!error){
       var $ = cheerio.load(html);
       console.log('loaded webpage eastleigh pr');
@@ -44,34 +46,23 @@ app.get('/scrape', function(req, res){
       var json = { pos : "", parkrunner : "", time : "", agecat : "", agegrade : "", gender : "", genderpos : "", note : "", totalruns : "" };
 
       $('table.sortable tbody tr').each(function(i, element){
-        var data = $(this).text();
-        console.log("and the data is", data);  
-        console.log("position", data.slice(0,3));  // this gives back the first 2 characters regardless.  Data here is just a long string
+        var children = $(this).children();
+        children.each(function(){
+          console.log ("children are", children.next().text());
+          // json.push(children.text());
+        });
+        // console.log("and json is");  
+        //console.log("position", data.slice(0,3));  // this gives back the first 2 characters regardless.  Data here is just a long string
       });
 
-      //json.pos = data;
+    }
 
-    //  $('.header').filter(function(){
-    //        var data = $(this);
-    //        title = data.children().first().text();
-    //        release = data.children().last().children().text();
-    //        json.title = title;
-    //        json.release = release;
-    //      })
+    fs.writeFile('output.json', JSON.stringify(json, null, 4), function(err){
+      console.log('File successfully written! - Check your project directory for the output.json file');
+    });
 
-    //      $('.star-box-giga-star').filter(function(){
-    //        var data = $(this);
-    //        rating = data.text();
-    //        json.rating = rating;
-    //      })
-}
-
-fs.writeFile('output.json', JSON.stringify(json, null, 4), function(err){
-  console.log('File successfully written! - Check your project directory for the output.json file');
-});
-
-res.send('Check your console!')
-})
+    res.send('Check your console!')
+  })
 })
 
 
