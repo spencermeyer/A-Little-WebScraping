@@ -19,7 +19,11 @@ app.use(cheerio);                                       // this is the webscrape
 
 app.get('/', function(req, res){
   res.sendfile('./public/index.html');
-})
+});
+
+app.get('/results', function(req, res){
+  res.sendfile('./public/results.html');
+});
 
 app.get('/scrape', function(req, res){
   // Let's scrape
@@ -46,16 +50,16 @@ app.get('/scrape', function(req, res){
         //console.log("this is children ",children);
         children.each(function(){
           //  now need to go throught the 10 child children and extract data *****
-          console.log("position ", children.eq(0).text());
-          console.log ("runner name ", children.eq(1).text());
-          console.log ("time ", children.eq(2).text());
-          console.log ("agecat ", children.eq(3).text());
-          console.log ("agegrade ", children.eq(4).text());
-          console.log ("gender ", children.eq(5).text());
-          console.log ("genderpos ", children.eq(6).text());
-          console.log ("club ", children.eq(7).text());
-          console.log ("Note ", children.eq(8).text());
-          console.log ("TotalRuns ", children.eq(9).text());
+          //  console.log("position ", children.eq(0).text());
+          //  console.log ("runner name ", children.eq(1).text());
+          //  console.log ("time ", children.eq(2).text());
+          //  console.log ("agecat ", children.eq(3).text());
+          //  console.log ("agegrade ", children.eq(4).text());
+          //  console.log ("gender ", children.eq(5).text());
+          //  console.log ("genderpos ", children.eq(6).text());
+          //  console.log ("club ", children.eq(7).text());
+          //  console.log ("Note ", children.eq(8).text());
+          //  console.log ("TotalRuns ", children.eq(9).text());
 
           if(children.eq(7).text() === "Eastleigh RC"){
             json[children.eq(0).text()] = { "pos" : children.eq(0).text(), "parkrunner" : children.eq(1).text(), "time": children.eq(2).text(), "agecat" :  children.eq(3).text(), "agegrade" : children.eq(4).text(), "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text() };
@@ -65,11 +69,12 @@ app.get('/scrape', function(req, res){
 
 }
 
-fs.writeFile('output.json', JSON.stringify(json, null, 4), function(err){
+fs.writeFile('public/output.json', JSON.stringify(json, null, 4), function(err){
   console.log('File successfully written! - Check your project directory for the output.json file');
 });
 
-res.send('Check your console!')
+res.sendfile('./public/results.html');
+
 })
 })
 
