@@ -27,12 +27,7 @@ $( document ).ready(function() {
     $('#inject_here').append(htmltoappend);
   });
 
-
-
-
-
 console.log("container loaded?");
-
 
 });
 
