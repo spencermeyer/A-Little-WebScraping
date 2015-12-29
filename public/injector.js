@@ -1,16 +1,18 @@
 // Try to scrape parkrun
 
 $( document ).ready(function() {
-  console.log( "ready!" );
-  console.log("hello from scraper.js required in index html");
-
-  // First inject the Eastleigh results
+  console.log("This is  scraper.js required in index html");
 
   var sourcesjson = { 1 : ["output.json", "#inject_here"],
-                      2 : ["output_n.json", "#inject_here_n"] };
+                      2 : ["output_n.json", "#inject_here_n"] 
+                    };
 
-  $.getJSON("output.json", function(result){
-    console.log("got some jason ? ");
+  $.each (sourcesjson, function (key, value) { 
+    console.log ("key value[0] value[1] ", key, value[0], value[1]);
+    console.log("source is: ", value[0]);
+    $.getJSON(value[0], function(result){
+  //$.getJSON("output.json", function(result){
+    //console.log("got some jason ? ");
     //console.log(result);
 
     var htmltoappend = '<table id="results" class="table-bordered">'
@@ -27,10 +29,11 @@ $( document ).ready(function() {
 
     htmltoappend = htmltoappend + '</tbody>' + '</table>';
 
-    $('#inject_here').append(htmltoappend);
+    $(value[1]).append(htmltoappend);
+    //$('#inject_here').append(htmltoappend);
   });
 
-  // Now inject the Netley results
+});
 
 console.log("container loaded?");
 });
