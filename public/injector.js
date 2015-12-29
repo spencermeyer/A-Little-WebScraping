@@ -4,7 +4,9 @@ $( document ).ready(function() {
   console.log("This is  scraper.js required in index html");
 
   var sourcesjson = { 1 : ["output.json", "#inject_here"],
-                      2 : ["output_n.json", "#inject_here_n"] 
+                      2 : ["output_n.json", "#inject_here_n"],
+                      3 : ["output_s.json", "#inject_here_s"],
+                      4 : ["output_w.json", "#inject_here_w"],
                     };
 
   $.each (sourcesjson, function (key, value) { 

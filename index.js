@@ -83,9 +83,55 @@ options.url = 'http://localhost:8000/results_Netley_Abbey_parkrun.html';
       });
     });
 
+// *** Lets scrape Southampton *****
+options.url = 'http://localhost:8000/results_Southampton_parkrun.html';
+    // url : 'http://www.parkrun.org.uk/southampton/results/latestresults/',
 
+    request(options, function(error, response, html){
+      if(error){console.log('There was an error', error)};
+      if(!error){
+        var $ = cheerio.load(html);
+        console.log('loaded webpage southampton pr no errors');
+        var json =[];
 
+        $('table.sortable tbody tr').each(function(i, element){ 
+          var children = $(this).children();
+          children.each(function(){
+            if(children.eq(7).text() === "Eastleigh RC"){
+              json[children.eq(0).text()] = { "pos" : children.eq(0).text(), "parkrunner" : children.eq(1).text(), "time": children.eq(2).text(), "agecat" :  children.eq(3).text(), "agegrade" : children.eq(4).text(), "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text() };
+            }
+          }); 
+        });
+      }
+      fs.writeFile('public/output_s.json', JSON.stringify(json, null, 4), function(err){
+        console.log('File_n successfully written! - Check your project directory for the output.json file');
+      });
+    });
 
+// *** Lets scrape Winchester *****
+options.url = 'http://localhost:8000/results_Winchester_parkrun.html';
+    // url : 'http://www.parkrun.org.uk/winchester/results/latestresults/',
+
+    request(options, function(error, response, html){
+      if(error){console.log('There was an error', error)};
+      if(!error){
+        var $ = cheerio.load(html);
+        console.log('loaded webpage southampton pr no errors');
+        var json =[];
+
+        $('table.sortable tbody tr').each(function(i, element){ 
+          var children = $(this).children();
+          children.each(function(){
+            if(children.eq(7).text() === "Eastleigh RC"){
+              json[children.eq(0).text()] = { "pos" : children.eq(0).text(), "parkrunner" : children.eq(1).text(), "time": children.eq(2).text(), "agecat" :  children.eq(3).text(), "agegrade" : children.eq(4).text(), "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text() };
+            }
+          }); 
+        });
+      }
+      fs.writeFile('public/output_w.json', JSON.stringify(json, null, 4), function(err){
+        console.log('File_n successfully written! - Check your project directory for the output.json file');
+      });
+    });
 
 
 res.sendfile('./public/results.html');

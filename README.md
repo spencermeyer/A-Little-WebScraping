@@ -6,4 +6,6 @@ I'm using Cheerio.js and Request.js to get tabulated data from an external websi
 
 I upload the JSON and inject it into the view as a table.
 
+The injector code is fairly DRY but scraping code wants refactoring as I repeat too much code, this is work in progress.
+
 
