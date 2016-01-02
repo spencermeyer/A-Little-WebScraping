@@ -32,8 +32,8 @@ app.get('/scrape', function(req, res){
 
   //  ****  Lets scrape Eastleigh  ***
   var options = {
-    // url : 'http://www.parkrun.org.uk/eastleigh/results/latestresults/',
-    url : 'http://localhost:8000/results_Eastleigh_parkrun.html',
+    url : 'http://www.parkrun.org.uk/eastleigh/results/latestresults/',
+    // url : 'http://localhost:8000/results_Eastleigh_parkrun.html',
     headers: {
       'User-Agent': 'request'
     }
@@ -59,8 +59,9 @@ app.get('/scrape', function(req, res){
     });
   });
 // *** Lets scrape Netley *****
-options.url = 'http://localhost:8000/results_Netley_Abbey_parkrun.html';
+options.url = 'http://www.parkrun.org.uk/netleyabbey/results/latestresults/';
     // url : 'http://www.parkrun.org.uk/netleyabbey/results/latestresults/',
+    // url = 'http://localhost:8000/results_Netley_Abbey_parkrun.html';
 
     request(options, function(error, response, html){
       if(error){console.log('There was an error', error)};
@@ -84,8 +85,9 @@ options.url = 'http://localhost:8000/results_Netley_Abbey_parkrun.html';
     });
 
 // *** Lets scrape Southampton *****
-options.url = 'http://localhost:8000/results_Southampton_parkrun.html';
+options.url = 'http://www.parkrun.org.uk/southampton/results/latestresults/';
     // url : 'http://www.parkrun.org.uk/southampton/results/latestresults/',
+    // url : 'http://localhost:8000/results_Southampton_parkrun.html',
 
     request(options, function(error, response, html){
       if(error){console.log('There was an error', error)};
@@ -109,8 +111,9 @@ options.url = 'http://localhost:8000/results_Southampton_parkrun.html';
     });
 
 // *** Lets scrape Winchester *****
-options.url = 'http://localhost:8000/results_Winchester_parkrun.html';
+options.url = 'http://www.parkrun.org.uk/winchester/results/latestresults/';
     // url : 'http://www.parkrun.org.uk/winchester/results/latestresults/',
+    // url : 'http://localhost:8000/results_Winchester_parkrun.html',
 
     request(options, function(error, response, html){
       if(error){console.log('There was an error', error)};
