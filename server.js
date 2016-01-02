@@ -1,159 +1,146 @@
-#!/bin/env node
-//  OpenShift sample Node application
-var express = require('express');
-var fs      = require('fs');
+//  Webscrape Demo by Spencer M.
 
+// Build a controller
+var express  = require('express');
+var fs       = require('fs');
+var request  = require('request');
+var app      = express();           // create our app w/ express
+var morgan   = require('morgan');   // log requests to the console (express4)
+var cheerio = require('cheerio');
 
-/**
- *  Define the sample application.
- */
-var SampleApp = function() {
+// configuration of controller
+app.use(express.static(__dirname + '/public'));         // set the static files location /public/img will be /img for users
+app.use(morgan('dev'));                                 // log every request to the console
+app.use(cheerio);                                       // this is the webscraper
+// app.use(bodyParser.urlencoded({'extended':'true'}));            // parse application/x-www-form-urlencoded
+// app.use(bodyParser.json());                                     // parse application/json
+// app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
+// app.use(methodOverride());
 
-    //  Scope.
-    var self = this;
+// configure routes
+app.get('/', function(req, res){
+  res.sendfile('./public/index.html');
+});
 
+app.get('/results', function(req, res){
+  res.sendfile('./public/results.html');
+});
 
-    /*  ================================================================  */
-    /*  Helper functions.                                                 */
-    /*  ================================================================  */
+// this route does the scraping and saves to json
+app.get('/scrape', function(req, res){
+  // Let's scrape
 
-    /**
-     *  Set up server IP address and port # using env variables/defaults.
-     */
-    self.setupVariables = function() {
-        //  Set the environment variables we need.
-        self.ipaddress = process.env.OPENSHIFT_NODEJS_IP;
-        self.port      = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+  //  ****  Lets scrape Eastleigh  ***
+  var options = {
+    url : 'http://www.parkrun.org.uk/eastleigh/results/latestresults/',
+    // url : 'http://localhost:8000/results_Eastleigh_parkrun.html',
+    headers: {
+      'User-Agent': 'request'
+    }
+  };
+  request(options, function(error, response, html){
+    if(error){console.log('There was an error', error)};
+    if(!error){
+      var $ = cheerio.load(html);
+      console.log('loaded webpage eastleigh pr no errors');
+      var json =[];
 
-        if (typeof self.ipaddress === "undefined") {
-            //  Log errors on OpenShift but continue w/ 127.0.0.1 - this
-            //  allows us to run/test the app locally.
-            console.warn('No OPENSHIFT_NODEJS_IP var, using 127.0.0.1');
-            self.ipaddress = "127.0.0.1";
-        };
-    };
+      $('table.sortable tbody tr').each(function(i, element){ 
+        var children = $(this).children();
+        children.each(function(){
+          if(children.eq(7).text() === "Eastleigh RC"){
+            json[children.eq(0).text()] = { "pos" : children.eq(0).text(), "parkrunner" : children.eq(1).text(), "time": children.eq(2).text(), "agecat" :  children.eq(3).text(), "agegrade" : children.eq(4).text(), "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text() };
+          }
+        }); 
+      });
+    }
+    fs.writeFile('public/output.json', JSON.stringify(json, null, 4), function(err){
+      console.log('File successfully written! - Check your project directory for the output.json file');
+    });
+  });
+// *** Lets scrape Netley *****
+options.url = 'http://www.parkrun.org.uk/netleyabbey/results/latestresults/';
+    // url : 'http://www.parkrun.org.uk/netleyabbey/results/latestresults/',
+    // url = 'http://localhost:8000/results_Netley_Abbey_parkrun.html';
 
+    request(options, function(error, response, html){
+      if(error){console.log('There was an error', error)};
+      if(!error){
+        var $ = cheerio.load(html);
+        console.log('loaded webpage netley pr no errors');
+        var json =[];
 
-    /**
-     *  Populate the cache.
-     */
-    self.populateCache = function() {
-        if (typeof self.zcache === "undefined") {
-            self.zcache = { 'index.html': '' };
-        }
-
-        //  Local cache for static content.
-        self.zcache['index.html'] = fs.readFileSync('./index.html');
-    };
-
-
-    /**
-     *  Retrieve entry (content) from cache.
-     *  @param {string} key  Key identifying content to retrieve from cache.
-     */
-    self.cache_get = function(key) { return self.zcache[key]; };
-
-
-    /**
-     *  terminator === the termination handler
-     *  Terminate server on receipt of the specified signal.
-     *  @param {string} sig  Signal to terminate on.
-     */
-    self.terminator = function(sig){
-        if (typeof sig === "string") {
-           console.log('%s: Received %s - terminating sample app ...',
-                       Date(Date.now()), sig);
-           process.exit(1);
-        }
-        console.log('%s: Node server stopped.', Date(Date.now()) );
-    };
-
-
-    /**
-     *  Setup termination handlers (for exit and a list of signals).
-     */
-    self.setupTerminationHandlers = function(){
-        //  Process on exit and signals.
-        process.on('exit', function() { self.terminator(); });
-
-        // Removed 'SIGPIPE' from the list - bugz 852598.
-        ['SIGHUP', 'SIGINT', 'SIGQUIT', 'SIGILL', 'SIGTRAP', 'SIGABRT',
-         'SIGBUS', 'SIGFPE', 'SIGUSR1', 'SIGSEGV', 'SIGUSR2', 'SIGTERM'
-        ].forEach(function(element, index, array) {
-            process.on(element, function() { self.terminator(element); });
+        $('table.sortable tbody tr').each(function(i, element){ 
+          var children = $(this).children();
+          children.each(function(){
+            if(children.eq(7).text() === "Eastleigh RC"){
+              json[children.eq(0).text()] = { "pos" : children.eq(0).text(), "parkrunner" : children.eq(1).text(), "time": children.eq(2).text(), "agecat" :  children.eq(3).text(), "agegrade" : children.eq(4).text(), "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text() };
+            }
+          }); 
         });
-    };
+      }
+      fs.writeFile('public/output_n.json', JSON.stringify(json, null, 4), function(err){
+        console.log('File_n successfully written! - Check your project directory for the output.json file');
+      });
+    });
 
+// *** Lets scrape Southampton *****
+options.url = 'http://www.parkrun.org.uk/southampton/results/latestresults/';
+    // url : 'http://www.parkrun.org.uk/southampton/results/latestresults/',
+    // url : 'http://localhost:8000/results_Southampton_parkrun.html',
 
-    /*  ================================================================  */
-    /*  App server functions (main app logic here).                       */
-    /*  ================================================================  */
+    request(options, function(error, response, html){
+      if(error){console.log('There was an error', error)};
+      if(!error){
+        var $ = cheerio.load(html);
+        console.log('loaded webpage southampton pr no errors');
+        var json =[];
 
-    /**
-     *  Create the routing table entries + handlers for the application.
-     */
-    self.createRoutes = function() {
-        self.routes = { };
-
-        self.routes['/asciimo'] = function(req, res) {
-            var link = "http://i.imgur.com/kmbjB.png";
-            res.send("<html><body><img src='" + link + "'></body></html>");
-        };
-
-        self.routes['/'] = function(req, res) {
-            res.setHeader('Content-Type', 'text/html');
-            res.send(self.cache_get('index.html') );
-        };
-    };
-
-
-    /**
-     *  Initialize the server (express) and create the routes and register
-     *  the handlers.
-     */
-    self.initializeServer = function() {
-        self.createRoutes();
-        self.app = express.createServer();
-
-        //  Add handlers for the app (from the routes).
-        for (var r in self.routes) {
-            self.app.get(r, self.routes[r]);
-        }
-    };
-
-
-    /**
-     *  Initializes the sample application.
-     */
-    self.initialize = function() {
-        self.setupVariables();
-        self.populateCache();
-        self.setupTerminationHandlers();
-
-        // Create the express server and routes.
-        self.initializeServer();
-    };
-
-
-    /**
-     *  Start the server (starts up the sample application).
-     */
-    self.start = function() {
-        //  Start the app on the specific interface (and port).
-        self.app.listen(self.port, self.ipaddress, function() {
-            console.log('%s: Node server started on %s:%d ...',
-                        Date(Date.now() ), self.ipaddress, self.port);
+        $('table.sortable tbody tr').each(function(i, element){ 
+          var children = $(this).children();
+          children.each(function(){
+            if(children.eq(7).text() === "Eastleigh RC"){
+              json[children.eq(0).text()] = { "pos" : children.eq(0).text(), "parkrunner" : children.eq(1).text(), "time": children.eq(2).text(), "agecat" :  children.eq(3).text(), "agegrade" : children.eq(4).text(), "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text() };
+            }
+          }); 
         });
-    };
+      }
+      fs.writeFile('public/output_s.json', JSON.stringify(json, null, 4), function(err){
+        console.log('File_n successfully written! - Check your project directory for the output.json file');
+      });
+    });
 
-};   /*  Sample Application.  */
+// *** Lets scrape Winchester *****
+options.url = 'http://www.parkrun.org.uk/winchester/results/latestresults/';
+    // url : 'http://www.parkrun.org.uk/winchester/results/latestresults/',
+    // url : 'http://localhost:8000/results_Winchester_parkrun.html',
+
+    request(options, function(error, response, html){
+      if(error){console.log('There was an error', error)};
+      if(!error){
+        var $ = cheerio.load(html);
+        console.log('loaded webpage southampton pr no errors');
+        var json =[];
+
+        $('table.sortable tbody tr').each(function(i, element){ 
+          var children = $(this).children();
+          children.each(function(){
+            if(children.eq(7).text() === "Eastleigh RC"){
+              json[children.eq(0).text()] = { "pos" : children.eq(0).text(), "parkrunner" : children.eq(1).text(), "time": children.eq(2).text(), "agecat" :  children.eq(3).text(), "agegrade" : children.eq(4).text(), "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text() };
+            }
+          }); 
+        });
+      }
+      fs.writeFile('public/output_w.json', JSON.stringify(json, null, 4), function(err){
+        console.log('File_n successfully written! - Check your project directory for the output.json file');
+      });
+    });
 
 
+res.sendfile('./public/results.html');
+})
 
-/**
- *  main():  Main code.
- */
-var zapp = new SampleApp();
-zapp.initialize();
-zapp.start();
-
+// listen (start app with node busController.js)
+app.listen(process.env.PORT || 5000);
+console.log("App listening on port 5000 or Heroku env port");
+exports = module.exports = app;
