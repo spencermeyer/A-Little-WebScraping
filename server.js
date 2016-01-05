@@ -12,10 +12,10 @@ var cheerio = require('cheerio');
 app.use(express.static(__dirname + '/public'));         // set the static files location /public/img will be /img for users
 app.use(morgan('dev'));                                 // log every request to the console
 app.use(cheerio);                                       // this is the webscraper
-// app.use(bodyParser.urlencoded({'extended':'true'}));            // parse application/x-www-form-urlencoded
-// app.use(bodyParser.json());                                     // parse application/json
-// app.use(bodyParser.json({ type: 'application/vnd.api+json' })); // parse application/vnd.api+json as json
-// app.use(methodOverride());
+
+// to do: incorporate scraping this:
+// http://www.parkrun.com/results/consolidatedclub/?clubNum=1537
+// refactor code below so there is only one scraping routine, the code is too WET
 
 // configure routes
 app.get('/', function(req, res){
@@ -38,6 +38,7 @@ app.get('/scrape', function(req, res){
       'User-Agent': 'request'
     }
   };
+
   request(options, function(error, response, html){
     if(error){console.log('There was an error', error)};
     if(!error){
@@ -59,7 +60,7 @@ app.get('/scrape', function(req, res){
     });
   });
 // *** Lets scrape Netley *****
-options.url = 'http://www.parkrun.org.uk/netleyabbey/results/latestresults/';
+   options.url = 'http://www.parkrun.org.uk/netleyabbey/results/latestresults/';
     // url : 'http://www.parkrun.org.uk/netleyabbey/results/latestresults/',
     // url = 'http://localhost:8000/results_Netley_Abbey_parkrun.html';
 
@@ -139,6 +140,8 @@ options.url = 'http://www.parkrun.org.uk/winchester/results/latestresults/';
 
 res.sendfile('./public/results.html');
 })
+
+
 
 // listen (start app with node busController.js)
 app.listen(process.env.PORT || 5000);
