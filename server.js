@@ -42,6 +42,13 @@ app.get('/scrape2', function(req, res){
     if(error){console.log('There was an error', error)};
     if(!error){console.log('not an error!')}
     console.log("something from the request to consolidated");
+    var json =[];
+    var $ = cheerio.load(html);
+    console.log('loaded webpage consolodated no errors');
+    $('.floatleft a').not('.sortable').each(function(i, element){
+      console.log("one element to console log but how many?", element.attribs, i);
+    });
+    console.log('after the selection');
   });
 console.log("hello from scrape2 after loading file");
 
