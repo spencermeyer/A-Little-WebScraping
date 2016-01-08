@@ -13,18 +13,41 @@ app.use(express.static(__dirname + '/public'));         // set the static files 
 app.use(morgan('dev'));                                 // log every request to the console
 app.use(cheerio);                                       // this is the webscraper
 
-// to do: incorporate scraping this:
-// http://www.parkrun.com/results/consolidatedclub/?clubNum=1537
-// refactor code below so there is only one scraping routine, the code is too WET
+// to do:
+// refactor /scrape code below so there is only one scraping routine, the code is too WET
 
 // configure routes
 app.get('/', function(req, res){
   res.sendfile('./public/index.html');
 });
 
+app.get('/results2', function(req, res){
+  res.sendfile('./public/results2.html');
+});
+
 app.get('/results', function(req, res){
   res.sendfile('./public/results.html');
 });
+
+app.get('/scrape2', function(req, res){
+  var options = {
+    url : 'http://localhost:8000/results_Consolidated_parkrun.html',
+    // url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
+    headers: {
+      'User-Agent': 'request'
+    }
+  };
+  console.log("hello from scrape 2");
+  request(options, function(error, response, html){
+    if(error){console.log('There was an error', error)};
+    if(!error){console.log('not an error!')}
+    console.log("something from the request to consolidated");
+  });
+console.log("hello from scrape2 after loading file");
+
+ res.sendfile('./public/results2.html'); 
+});
+
 
 // this route does the scraping and saves to json
 app.get('/scrape', function(req, res){
