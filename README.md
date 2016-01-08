@@ -8,8 +8,6 @@ I upload the JSON and inject it into the view as a table.
 
 The injector code is fairly DRY but scraping code wants refactoring as I repeat too much code, this is work in progress.
 
-Trying to deploy on openshift (might not work):
+This application is deployed on openshift:
 
-The OpenShift `nodejs` cartridge documentation can be found at:
-
-http://openshift.github.io/documentation/oo_cartridge_guide.html#nodejs
+http://parkcollector-systraph.rhcloud.com/

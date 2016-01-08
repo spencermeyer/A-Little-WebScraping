@@ -141,9 +141,19 @@ options.url = 'http://www.parkrun.org.uk/winchester/results/latestresults/';
 res.sendfile('./public/results.html');
 })
 
+// TO DO :
+//  http://stackoverflow.com/questions/31358992/application-appname-failed-to-start-port-8080-not-available-on-open-shift-no
+
+app.set('port', process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 5000);
+app.set('ip', process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1");
+
+app.listen(app.get('port') ,app.get('ip'), function () {
+    console.log("✔ Express server listening at %s:%d ", app.get('ip'),app.get('port'));
+});
 
 
-// listen (start app with node busController.js)
-app.listen(process.env.PORT || 5000);
-console.log("App listening on port 5000 or Heroku env port");
-exports = module.exports = app;
+
+// listen (start app with node busController.js)  below is code that worked locally and will work on heroku
+// app.listen(process.env.PORT || 5000);
+// console.log("App listening on port 5000 or Heroku env port");
+// exports = module.exports = app;
