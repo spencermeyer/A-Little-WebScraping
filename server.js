@@ -46,7 +46,12 @@ app.get('/scrape2', function(req, res){
     var $ = cheerio.load(html);
     console.log('loaded webpage consolodated no errors');
     $('.floatleft a').not('.sortable').each(function(i, element){
-      console.log("one element to console log but how many?", element.attribs, i);
+      test=element.attribs.href;
+      if(test.indexOf("weekly")!=-1){
+        console.log("one element but how many?", test, i);
+      }
+        
+    
     });
     console.log('after the selection');
   });
