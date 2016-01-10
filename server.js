@@ -49,13 +49,20 @@ app.get('/scrape2', function(req, res){
       test=element.attribs.href;
       if(test.indexOf("weekly")!=-1){
         console.log("one element but how many?", test, i);
+        json.push({"website": test});
       }
-        
-    
+        //  TO DO  write links to json then autoscrape
     });
+    // now the json has the links to each parkrun, write the file
+    fs.writeFile('public/links.json', JSON.stringify(json, null, 4), function(err){
+    console.log('File successfully written! - Check your project directory for the links.json file');
+    });
+
     console.log('after the selection');
   });
+   
 console.log("hello from scrape2 after loading file");
+
 
  res.sendfile('./public/results2.html'); 
 });
