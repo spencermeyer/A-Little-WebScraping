@@ -1,7 +1,7 @@
 // Try to scrape parkrun
 
 $( document ).ready(function() {
-  console.log("This is injector.js required in index html");
+  console.log("This is injector.js required in results html");
 
   var sourcesjson = { 1 : ["output.json", "#inject_here"],
                       2 : ["output_n.json", "#inject_here_n"],
