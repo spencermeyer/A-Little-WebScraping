@@ -69,10 +69,6 @@ app.get('/scrape', function(req, res){
   console.log("from scrape");
   // First clean the output.json
   var json =[];
-  //  fs.writeFile('public/output.json', JSON.stringify(json, null, 4), function(err){  
-  //    console.log('output.json is cleaned');  
-  //  });
-  //  OK THIS WORKED BUT WAS ASYNC.
   fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
   console.log("json cleaned / created");
   
@@ -109,17 +105,15 @@ var options = {
           //Here, pick out the data and assign json
           $('table.sortable tbody tr').each(function(i, element){ 
             var children = $(this).children();
-            children.each(function(){
               if(children.eq(7).text() === "Eastleigh RC"){
-                json[children.eq(0).text()] = { "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :   children.eq(1).text(), "  time": children.eq(2).text(), "agecat" :  children.eq(3). text(), "agegrade" : children.eq(4).text() , "gender" : children.eq(5).text( ), " genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" :    children.eq(8).text(), "TotalRuns" : children.eq(9).text() };   
+                json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :   children.eq(1).text(), "  time": children.eq(2).text(), "agecat" :  children.eq(3). text(), "agegrade" : children.eq(4).text() , "gender" : children.eq(5).text( ), " genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" :    children.eq(8).text(), "TotalRuns" : children.eq(9).text() });   
               }   
-            });       
           });   
         }
-    fs.appendFileSync('public/output.json', JSON.stringify(json, null, 4)); 
+    fs.appendFile('public/output.json', JSON.stringify(json, null, 4));
+    //  need to get each push not to make new objects !!!!!!
     console.log('File sync written! - Check your output.json file');
       });
-
   }
 console.log("and this is after the subroutine before file send");
 res.sendfile('./public/results.html');

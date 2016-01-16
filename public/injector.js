@@ -3,33 +3,39 @@
 $( document ).ready(function() {
   console.log("This is injector.js required in results html");
 
+  var htmltoappend = '<table id="results" class="table-bordered">'
+  htmltoappend = htmltoappend + '<tbody>'
+  htmltoappend = htmltoappend + '<tr><th>' + "Result" + '</th><th>' + 'Parkrunner' + '</th>' + '<th>' + 'Time' + '</th>' + '<th>' + 'Agecat' + '</th>' + '<th>' + 'Agegrade' + '<th>'+'Gender' + '</th>' +  '<th>' + 'GenderPos' + '</th>' + '<th>' + 'Note' + '</th>' + '<th>' + 'Total Runs' + '</th></tr>';
 
-  $.getJSON("output.json", function (Result) { 
-    console.log('got some json?',Result);
+  result=$.getJSON("output.json", function (result) { 
+    console.log('got some json?', result.length);
+    return result
   });
 
-  //$.getJSON("output.json", function(result){
-    //console.log("got some jason ? ");
-    //console.log(result);
+  console.log("and result is ", result);
+
+  for (i = 0; i < result.length; i++) {
+    console.log(result[i].parkrunner);
+    htmltoappend = htmltoappend + '<tr><td>' + result[i].pos + '</td><td>' + result[i].parkrunner + '</td>' + '<td>' + result[i].time + '</td>' + '<td>' + result[i].agecat + '</td>' + '<td>//' + result[i].agegrade + '</td>' + '<td>' + result[i].gender + '</td>' + '<td>' + result[i].genderpos + '</td>' + '<td>' + result[i].Note + '</td>' + '<td>' + result[i].TotalRuns + '</th>' + '</tr>';
+  }
+
 //
-//    var htmltoappend = '<table id="results" class="table-bordered">'
-//    htmltoappend = htmltoappend + '<tbody>'//
-//    htmltoappend = htmltoappend + '<tr><th>' + "Result" + '</th><th>' + 'Parkrunner' + '</th>' + '<th>' +// 'Time' + '</th>' + '<th>' + 'Agecat' + '</th>' + '<th>' + 'Agegrade' + '<th>'+'Gender' + '</th>' +// '<th>' + 'GenderPos' + '</th>' + '<th>' + 'Note' + '</th>' + '<th>' + 'Total Runs' + '</th></tr>';//
-//
-//    for (i = 0; i < result.length; i++) {
+//  for (i = 0; i < result.length; i++) {
 //      // console.log("logic?  ", result[i]!==null );
 //      if(result[i]!==null) { 
 //        //console.log("going into loop ",i);//
 //        htmltoappend = htmltoappend + '<tr><td>' + result[i].pos + '</td><td>' + result[i].parkrunner //+ '//</td>' + '<td>' + result[i].time + '</td>' + '<td>' + result[i].agecat + '</td>' + '<td>//' + //result[i].agegrade + '</td>' + '<td>' + result[i].gender + '</td>' + '<td>' + result[i].//genderpos + //'</td>' + '<td>' + result[i].Note + '</td>' + '<td>' + result[i].TotalRuns +// '</th>//' + '</tr>';//
 //     // }//
-//    }//
-//
-//    htmltoappend = htmltoappend + '</tbody>' + '</table>';
-//
-//    $(value[1]).append(htmltoappend);
-//    //$('#inject_here').append(htmltoappend);
-//  });
+//  }//
 
+  htmltoappend = htmltoappend + '</tbody>' + '</table>';
+
+//  $(value[1]).append(htmltoappend);
+
+    $('#inject_here').append(htmltoappend);
+
+//  });
+//
 
   console.log("container loaded?");
 
