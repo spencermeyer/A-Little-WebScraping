@@ -101,37 +101,39 @@ var options = {
     };
     console.log('after set options');
   // THIS IS THE LOOP
-  // lets try a promise
-
-  for (i=0; i<(sitesLocal.length); i++){
-    console.log('scraping:', i, sitesLocal[i].website);  
-    options.url = sitesLocal[i].website;
-      // This works, but console logs are deceiving writefile website wrong
-      // because file write is still happening as program ex continues
+  
+  for(website in sitesLocal)
+  {
+    console.log('scraping:', sitesLocal[website].website, website);  
+    options.url = sitesLocal[website].website;
+      // This works, but the loop continues as the requests are in progress
+      // the loop is faster and it writes 
       // and it writes data that is changing
       request(options, function(error, response, html){
         if(error){console.log('There was an error', error)};
         if(!error){
-          console.log("first thing from the no error", i);
+          console.log("first thing from the no error");
           var $ = cheerio.load(html);
-          console.log('loaded webpage', options.url, 'parkrun no errors');
+          console.log('loaded webpage', sitesLocal[website].website, 'parkrun no errors');
           var json =[];
           //Here, pick out the data and assign json
+          console.log("parkrun?",$('#primary h2').text());
           $('table.sortable tbody tr').each(function(i, element){ 
             var children = $(this).children();
             children.each(function(){
               if(children.eq(7).text() === "Eastleigh RC"){
-                json[children.eq(0).text()] = { "parkrun" : options.url, "pos" : children.eq(0).text(), "parkrunner" :   children.eq(1).text(), "  time": children.eq(2).text(), "agecat" :  children  .eq(3). text(), "agegrade" : children.eq(4).text() , "gender" : children.eq(5).text( ), " genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" :    children.eq(8).text(), "TotalRuns" : children.eq(9).text() };   
+                json[children.eq(0).text()] = { "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :   children.eq(1).text(), "  time": children.eq(2).text(), "agecat" :  children  .eq(3). text(), "agegrade" : children.eq(4).text() , "gender" : children.eq(5).text( ), " genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" :    children.eq(8).text(), "TotalRuns" : children.eq(9).text() };   
               }   
             });       
           });   
         }
-    //  make it wait
-    fs.appendFileSync('public/output.json', JSON.stringify(json, null, 4));  
+    //  make it wait request takes too long and is being done at the end of program flow
+    fs.appendFileSync('public/output.json', JSON.stringify(json, null, 4)); 
     console.log('File sync written! - Check your output.json file');
         //this working
       });  //end of request
-}
+  setTimeout(console.log("timout function"), 5000);
+  }
 console.log("and this is after the subroutine before file send");
 res.sendfile('./public/results.html');
 });
