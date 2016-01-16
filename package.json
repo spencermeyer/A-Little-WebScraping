@@ -3,8 +3,10 @@
   "version": "1.0.0",
   "description": "webscraper js",
   "main": "server.js",
+  "files": [".npmignore"],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js --ignore output.json"
   },
   "author": "spencer",
   "dependencies" : {
