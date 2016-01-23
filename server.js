@@ -62,8 +62,9 @@ app.get('/scrape2', function(req, res){
   res.sendfile('./public/results2.html'); 
 });
 
+// TODO Link these two together !!!
 
-// this route does the scraping and saves to json
+// this route does the scraping and saves to json it is working.
 app.get('/scrape', function(req, res){
   // Let's scrape
   console.log("from scrape");
@@ -78,10 +79,8 @@ app.get('/scrape', function(req, res){
   { "website" : 'http://localhost:8000/results_Southampton_parkrun.html'},
   { "website" : 'http://localhost:8000/results_Winchester_parkrun.html'}
   ]
-//  ****  Lets scrape all
 
 // now go through all the websites where there are results:
-
 var options = {
       // url : 'http://www.parkrun.org.uk/eastleigh/results/latestresults/',
       url : sitesLocal[0].website,
