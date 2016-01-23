@@ -115,10 +115,10 @@ var options = {
   }
 
 var timerFunction = setTimeout(function(){
-  console.log("should be 2 seconds later writing file");
+  console.log("should be 1 seconds later writing file");
   fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
   console.log("File written! - Check your output.json file");
-},2000);
+},1000);
       
 console.log("and this is after the subroutine before file send");
 res.sendfile('./public/results.html');
