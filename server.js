@@ -94,27 +94,32 @@ var options = {
   // THIS IS THE LOOP
   for(website in sitesLocal)
   {
-    console.log('scraping:', sitesLocal[website].website, website);  
+    // console.log('scraping:', sitesLocal[website].website, website);  
     options.url = sitesLocal[website].website;
       request(options, function(error, response, html){
         if(error){console.log('There was an error', error)};
         if(!error){
-          console.log("first thing from the no error");
+          console.log("no error, scraping");
           var $ = cheerio.load(html);
-          var json =[];
           //Here, pick out the data and assign json
           $('table.sortable tbody tr').each(function(i, element){ 
             var children = $(this).children();
-              if(children.eq(7).text() === "Eastleigh RC"){
-                json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :   children.eq(1).text(), "  time": children.eq(2).text(), "agecat" :  children.eq(3). text(), "agegrade" : children.eq(4).text() , "gender" : children.eq(5).text( ), " genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" :    children.eq(8).text(), "TotalRuns" : children.eq(9).text() });   
-              }   
-          });   
-        }
-    fs.appendFile('public/output.json', JSON.stringify(json, null, 4));
-    //  need to get each push not to make new objects !!!!!!
-    console.log('File sync written! - Check your output.json file');
+            if(children.eq(7).text() === "Eastleigh RC"){
+              json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agec" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});   
+            }   
+          }); // end of each element in table sortable 
+          console.log('here the file is read and json assigned');
+          console.log("");
+         }
       });
   }
+
+var timerFunction = setTimeout(function(){
+  console.log("should be 2 seconds later writing file");
+  fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
+  console.log("File written! - Check your output.json file");
+},2000);
+      
 console.log("and this is after the subroutine before file send");
 res.sendfile('./public/results.html');
 });
