@@ -9,12 +9,9 @@ var morgan   = require('morgan');   // log requests to the console (express4)
 var cheerio  = require('cheerio');
 
 // configuration of controller
-app.use(express.static(__dirname + '/public'));         // set the static files location /public/img will be /img for users
-app.use(morgan('dev'));                                 // log every request to the console
-app.use(cheerio);                                       // this is the webscraper
-
-// to do:
-// refactor /scrape code below so there is only one scraping routine, the code is too WET
+app.use(express.static(__dirname + '/public'));   // set the static files location /public/img will be /img for users
+app.use(morgan('dev'));                           // log every request to the console
+app.use(cheerio);                                 // this is the webscraper
 
 // configure routes
 app.get('/', function(req, res){
@@ -25,8 +22,7 @@ app.get('/results', function(req, res){
   res.sendfile('./public/results.html');
 });
 
-// this route scrapes the consolodated site and makes a json of the sources
-// This is working!!!
+// this route scrapes, makes a json and sends the results view
 app.get('/scrape', function(req, res){
   var options = {
     url : 'http://localhost:8000/results_Consolidated_parkrun.html',

@@ -3,6 +3,18 @@
 $( document ).ready(function() {
   console.log("This is injector.js required in results html");
 
+  var timerFunction1 = setTimeout(function(){
+      console.log("in first timer");
+      var htmlIntro = '<p> Today there were runners from: </p>';
+      $.getJSON("links.json", function (links) {
+        console.log("got links", links[0].website)
+        for (i = 0; i < links.length; i++) {
+          htmlIntro=htmlIntro + '<p>' + links[i].website + '</p>'
+        }
+        $('#inject_here').append(htmlIntro);
+      });
+  },1000);
+
   var timerFunction2 = setTimeout(function(){
     console.log("should be 1.5 seconds after loading");
     $.getJSON("output.json", function (result) {
@@ -17,7 +29,7 @@ $( document ).ready(function() {
       htmltoappend = htmltoappend + '</tbody>' + '</table>';
       $('#inject_here').append(htmltoappend);
     });
-  console.log("Injected?");
+  console.log("Injected2 ?");
   },1500);
 
 });
