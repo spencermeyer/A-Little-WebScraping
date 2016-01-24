@@ -26,7 +26,6 @@ don't use nodemon server.js   because the json file changes in the middle of the
 To Do:
   1) get the node ignore file working so that I can use nodemon.
   2) at the moment I have written a routine to 1) find the websites I need to scrape and 2) scrape from hardcoded websites sources, I need to link the two together.
-
-
+  3) Add lots more styling !
 
 
