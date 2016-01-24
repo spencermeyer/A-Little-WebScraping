@@ -15,6 +15,9 @@ app.use(cheerio);                                 // this is the webscraper
 
 // configure routes
 app.get('/', function(req, res){
+  console.log("home route");
+  // the following doesn't work: no JQuery in router.
+  // $.getJSON( "http://smart-ip.net/geoip-json?callback=?", function(data){ console.log("vis info?", data.host) });
   res.sendfile('./public/index.html');
 });
 
@@ -23,6 +26,7 @@ app.get('/results', function(req, res){
 });
 
 // this route scrapes, makes a json and sends the results view
+
 app.get('/scrape', function(req, res){
   var options = {
     url : 'http://localhost:8000/results_Consolidated_parkrun.html',
