@@ -13,7 +13,6 @@ $( document ).ready(function() {
         }
         $('#inject_here').append(htmlIntro);
       });
-  
   },1000);
 
   var timerFunction2 = setTimeout(function(){

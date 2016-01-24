@@ -65,10 +65,10 @@ app.get('/scrape', function(req, res){
   console.log("json cleaned / created");
   
   var sitesLocal = [
-  { "website" : 'http://localhost:8000/results_Eastleigh_parkrun.html'},
-  { "website" : 'http://localhost:8000/results_Netley_Abbey_parkrun.html'},
-  { "website" : 'http://localhost:8000/results_Southampton_parkrun.html'},
-  { "website" : 'http://localhost:8000/results_Winchester_parkrun.html'}
+  { "website" : 'http://localhost:8000/results_Eastleigh_parkrun_weekly.html'},
+  { "website" : 'http://localhost:8000/results_Netley_Abbey_parkrun_weekly.html'},
+  { "website" : 'http://localhost:8000/results_Southampton_parkrun_weekly.html'},
+  { "website" : 'http://localhost:8000/results_Winchester_parkrun_weekly.html'}
   ]
 
 // now go through all the websites where there are results:
