@@ -31,7 +31,7 @@ app.get('/results', function(req, res){
 
 // this route scrapes the consolodated site and makes a json of the sources
 // This is working!!!
-app.get('/scrape2', function(req, res){
+app.get('/scrape0', function(req, res){
   var options = {
     url : 'http://localhost:8000/results_Consolidated_parkrun.html',
     // url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
@@ -43,18 +43,18 @@ app.get('/scrape2', function(req, res){
     if(error){console.log('There was an error', error)};
     if(!error){console.log('not an error!')}
       console.log("something from the request to consolidated");
-    var json =[];
+    var linksjson =[];
     var $ = cheerio.load(html);
     console.log('loaded webpage consolodated no errors');
     $('.floatleft a').not('.sortable').each(function(i, element){
       test=element.attribs.href;
       if(test.indexOf("weekly")!=-1){
-        console.log("json push this:", test, i);
-        json.push({"website": test});
+        console.log("linksjson push this:", test, i);
+        linksjson.push({"website": test});
       }
     });
-    // now the json has the links to each parkrun, write the file
-    fs.writeFile('public/links.json', JSON.stringify(json, null, 4), function(err){
+    // now the linksjson has the links to each parkrun, write the file
+    fs.writeFile('public/links.json', JSON.stringify(linksjson, null, 4), function(err){
       console.log('File links.json successfully written! - Check your project directory for the links.json file');
     });
   });
