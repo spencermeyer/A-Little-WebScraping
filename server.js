@@ -21,17 +21,13 @@ app.get('/', function(req, res){
   res.sendfile('./public/index.html');
 });
 
-app.get('/results2', function(req, res){
-  res.sendfile('./public/results2.html');
-});
-
 app.get('/results', function(req, res){
   res.sendfile('./public/results.html');
 });
 
 // this route scrapes the consolodated site and makes a json of the sources
 // This is working!!!
-app.get('/scrape0', function(req, res){
+app.get('/scrape', function(req, res){
   var options = {
     url : 'http://localhost:8000/results_Consolidated_parkrun.html',
     // url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
@@ -57,17 +53,16 @@ app.get('/scrape0', function(req, res){
     fs.writeFile('public/links.json', JSON.stringify(linksjson, null, 4), function(err){
       console.log('File links.json successfully written! - Check your project directory for the links.json file');
     });
-  });
-  console.log("hello from scrape2 after loading file");
-  res.sendfile('./public/results2.html'); 
-});
+  });  // end of the request routine
+
+// here was sendfile
 
 // TODO Link these two together !!!
 
 // this route does the scraping and saves to json it is working.
-app.get('/scrape', function(req, res){
+
   // Let's scrape
-  console.log("from scrape");
+  console.log("from individual scrapes");
   // First clean the output.json
   var json =[];
   fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
