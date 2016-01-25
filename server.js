@@ -58,6 +58,8 @@ app.get('/scrape', function(req, res){
 // here was sendfile
 
 // TODO Link these two together !!!
+// DONE - THEY ARE NOW IN THE SAME ROUTE, NEED TO USE "LINKSJSON" BELOW.
+
 
 // this route does the scraping and saves to json it is working.
 
