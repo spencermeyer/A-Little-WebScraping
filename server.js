@@ -63,6 +63,9 @@ app.get('/scrape', function(req, res){
 
 // this route does the scraping and saves to json it is working.
 
+var timerFunction0 = setTimeout(function(){
+// going to try 500 ms timeout of this first time function
+
   // Let's scrape
   console.log("from individual scrapes");
   // First clean the output.json
@@ -80,7 +83,7 @@ app.get('/scrape', function(req, res){
 // now go through all the websites where there are results:
 var options = {
       // url : 'http://www.parkrun.org.uk/eastleigh/results/latestresults/',
-      url : sitesLocal[0].website,
+      url : linksjson[0].website,
       headers: {
         'User-Agent': 'request'
       }
@@ -88,10 +91,10 @@ var options = {
     console.log('after set options');
 
   // THIS IS THE LOOP
-  for(website in sitesLocal)
+  for(website in linksjson)
   {
     // console.log('scraping:', sitesLocal[website].website, website);  
-    options.url = sitesLocal[website].website;
+    options.url = linksjson[website].website;
       request(options, function(error, response, html){
         if(error){console.log('There was an error', error)};
         if(!error){
@@ -116,6 +119,9 @@ var timerFunction = setTimeout(function(){
   console.log("File written! - Check your output.json file");
 },1000);
       
+//try end of first timout here
+}, 500);
+
 console.log("and this is after the subroutine before file send");
 res.sendfile('./public/results.html');
 });
