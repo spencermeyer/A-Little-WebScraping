@@ -35,11 +35,11 @@ app.get('/scrape', function(req, res){
       'User-Agent': 'request'
     }
   };
+  var linksjson =[];
   request(options, function(error, response, html){
     if(error){console.log('There was an error', error)};
     if(!error){console.log('not an error!')}
       console.log("something from the request to consolidated");
-    var linksjson =[];
     var $ = cheerio.load(html);
     console.log('loaded webpage consolodated no errors');
     $('.floatleft a').not('.sortable').each(function(i, element){
@@ -54,12 +54,6 @@ app.get('/scrape', function(req, res){
       console.log('File links.json successfully written! - Check your project directory for the links.json file');
     });
   });  // end of the request routine
-
-// here was sendfile
-
-// TODO Link these two together !!!
-// DONE - THEY ARE NOW IN THE SAME ROUTE, NEED TO USE "LINKSJSON" BELOW.
-
 
 // this route does the scraping and saves to json it is working.
 
@@ -120,7 +114,7 @@ var timerFunction = setTimeout(function(){
 },1000);
       
 //try end of first timout here
-}, 500);
+}, 1500);
 
 console.log("and this is after the subroutine before file send");
 res.sendfile('./public/results.html');
