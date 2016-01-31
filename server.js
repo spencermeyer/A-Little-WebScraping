@@ -102,7 +102,7 @@ var timerFunction = setTimeout(function(){
 },1000);
       
 //try end of first timout here
-}, 1500);
+}, 2000);
 
 console.log("and this is after the subroutine before file send");
 res.sendfile('./public/results.html');
