@@ -14,7 +14,7 @@ app.use(morgan('dev'));                           // log every request to the co
 app.use(cheerio);                                 // this is the webscraper
 
 // configure routes
-app.get('/', function(req, res){
+app.get('/', function(req, res){  
   console.log("home route");
   res.sendfile('./public/index.html');
 });
@@ -25,9 +25,19 @@ app.get('/results', function(req, res){
 
 // this route scrapes, makes a json and sends the results view
 app.get('/scrape', function(req, res){
+  //var visitsjson = []
+  //visitsjson.push({'cookies enabled is': navigator.cookieEnabled,
+  //  'user Agent': navigator.userAgent,
+  //  'appName': navigator.appName,
+  //  'appCodeName is': navigator.appCodeName,
+  console.log("appCodeName", navigator.appCodeName);
+  //  'platform is': navigator.platform,
+  //  'product is': navigator.product})
+  //fs.appendFile('visits.json', JSON.stringify(visitsjson, null, 4));
+
   var options = {
-    // url : 'http://localhost:8000/results_Consolidated_parkrun.html',
-    url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
+    url : 'http://localhost:8000/results_Consolidated_parkrun.html',
+    // url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
     headers: {
       'User-Agent': 'request'
     }
@@ -36,19 +46,19 @@ app.get('/scrape', function(req, res){
   request(options, function(error, response, html){
     if(error){console.log('There was an error', error)};
     if(!error){console.log('not an error!')}
-      console.log("something from the request to consolidated");
+      //console.log("something from the request to consolidated");
     var $ = cheerio.load(html);
-    console.log('loaded webpage consolodated no errors');
+    //console.log('loaded webpage consolodated no errors');
     $('.floatleft a').not('.sortable').each(function(i, element){
       test=element.attribs.href;
       if(test.indexOf("weekly")!=-1){
-        console.log("linksjson push this:", test, i);
+        //console.log("linksjson push this:", test, i);
         linksjson.push({"website": test});
       }
     });
     // now the linksjson has the links to each parkrun, write the file
     fs.writeFile('public/links.json', JSON.stringify(linksjson, null, 4), function(err){
-      console.log('File links.json successfully written! - Check your project directory for the links.json file');
+      //console.log('File links.json successfully written! - Check your project directory for the links.json file');
     });
   });  // end of the request routine
 
@@ -58,11 +68,11 @@ var timerFunction0 = setTimeout(function(){
 // going to try 500 ms timeout of this first time function
 
   // Let's scrape
-  console.log("from individual scrapes");
+  //console.log("from individual scrapes");
   // First clean the output.json
   var json =[];
   fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
-  console.log("json cleaned / created");
+  //console.log("json cleaned / created");
   
 // now go through all the websites where there are results:
 var options = {
@@ -71,7 +81,7 @@ var options = {
         'User-Agent': 'request'
       }
     };
-    console.log('after set options');
+    //console.log('after set options');
 
   // THIS IS THE LOOP
   for(website in linksjson)
@@ -80,7 +90,7 @@ var options = {
       request(options, function(error, response, html){
         if(error){console.log('There was an error', error)};
         if(!error){
-          console.log("no error, scraping");
+          //console.log("no error, scraping");
           var $ = cheerio.load(html);
           //Here, pick out the data and assign json
           $('table.sortable tbody tr').each(function(i, element){ 
@@ -89,8 +99,8 @@ var options = {
               json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});   
             }   
           }); // end of each element in table sortable 
-          console.log('here the file is read and json assigned');
-          console.log("");
+          //console.log('here the file is read and json assigned');
+          //console.log("");
          }
       });
   }
@@ -102,7 +112,7 @@ var timerFunction = setTimeout(function(){
 },1000);
       
 //try end of first timout here
-}, 1500);
+}, 2000);
 
 console.log("and this is after the subroutine before file send");
 res.sendfile('./public/results.html');
