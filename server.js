@@ -16,8 +16,6 @@ app.use(cheerio);                                 // this is the webscraper
 // configure routes
 app.get('/', function(req, res){
   console.log("home route");
-  // the following doesn't work: no JQuery in router.
-  // $.getJSON( "http://smart-ip.net/geoip-json?callback=?", function(data){ console.log("vis info?", data.host) });
   res.sendfile('./public/index.html');
 });
 
@@ -26,11 +24,10 @@ app.get('/results', function(req, res){
 });
 
 // this route scrapes, makes a json and sends the results view
-
 app.get('/scrape', function(req, res){
   var options = {
-    url : 'http://localhost:8000/results_Consolidated_parkrun.html',
-    // url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
+    // url : 'http://localhost:8000/results_Consolidated_parkrun.html',
+    url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
     headers: {
       'User-Agent': 'request'
     }
@@ -67,16 +64,8 @@ var timerFunction0 = setTimeout(function(){
   fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
   console.log("json cleaned / created");
   
-  var sitesLocal = [
-  { "website" : 'http://localhost:8000/results_Eastleigh_parkrun_weekly.html'},
-  { "website" : 'http://localhost:8000/results_Netley_Abbey_parkrun_weekly.html'},
-  { "website" : 'http://localhost:8000/results_Southampton_parkrun_weekly.html'},
-  { "website" : 'http://localhost:8000/results_Winchester_parkrun_weekly.html'}
-  ]
-
 // now go through all the websites where there are results:
 var options = {
-      // url : 'http://www.parkrun.org.uk/eastleigh/results/latestresults/',
       url : linksjson[0].website,
       headers: {
         'User-Agent': 'request'
@@ -86,8 +75,7 @@ var options = {
 
   // THIS IS THE LOOP
   for(website in linksjson)
-  {
-    // console.log('scraping:', sitesLocal[website].website, website);  
+  { 
     options.url = linksjson[website].website;
       request(options, function(error, response, html){
         if(error){console.log('There was an error', error)};
