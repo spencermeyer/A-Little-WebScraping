@@ -6,30 +6,28 @@ var fs       = require('fs');
 var request  = require('request');
 var app      = express();           // create our app w/ express
 var morgan   = require('morgan');   // log requests to the console (express4)
-var cheerio = require('cheerio');
+var cheerio  = require('cheerio');
 
 // configuration of controller
-app.use(express.static(__dirname + '/public'));         // set the static files location /public/img will be /img for users
-app.use(morgan('dev'));                                 // log every request to the console
-app.use(cheerio);                                       // this is the webscraper
-
-// to do:
-// refactor /scrape code below so there is only one scraping routine, the code is too WET
+app.use(express.static(__dirname + '/public'));   // set the static files location /public/img will be /img for users
+app.use(morgan('dev'));                           // log every request to the console
+app.use(cheerio);                                 // this is the webscraper
 
 // configure routes
 app.get('/', function(req, res){
+  console.log("home route");
+  // the following doesn't work: no JQuery in router.
+  // $.getJSON( "http://smart-ip.net/geoip-json?callback=?", function(data){ console.log("vis info?", data.host) });
   res.sendfile('./public/index.html');
-});
-
-app.get('/results2', function(req, res){
-  res.sendfile('./public/results2.html');
 });
 
 app.get('/results', function(req, res){
   res.sendfile('./public/results.html');
 });
 
-app.get('/scrape2', function(req, res){
+// this route scrapes, makes a json and sends the results view
+
+app.get('/scrape', function(req, res){
   var options = {
     url : 'http://localhost:8000/results_Consolidated_parkrun.html',
     // url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
@@ -37,157 +35,95 @@ app.get('/scrape2', function(req, res){
       'User-Agent': 'request'
     }
   };
-  console.log("hello from scrape 2");
+  var linksjson =[];
   request(options, function(error, response, html){
     if(error){console.log('There was an error', error)};
     if(!error){console.log('not an error!')}
-    console.log("something from the request to consolidated");
-    var json =[];
+      console.log("something from the request to consolidated");
     var $ = cheerio.load(html);
     console.log('loaded webpage consolodated no errors');
     $('.floatleft a').not('.sortable').each(function(i, element){
       test=element.attribs.href;
       if(test.indexOf("weekly")!=-1){
-        console.log("one element but how many?", test, i);
+        console.log("linksjson push this:", test, i);
+        linksjson.push({"website": test});
       }
-        //  TO DO  write links to json then autoscrape
     });
-    console.log('after the selection');
-  });
-console.log("hello from scrape2 after loading file");
+    // now the linksjson has the links to each parkrun, write the file
+    fs.writeFile('public/links.json', JSON.stringify(linksjson, null, 4), function(err){
+      console.log('File links.json successfully written! - Check your project directory for the links.json file');
+    });
+  });  // end of the request routine
 
- res.sendfile('./public/results2.html'); 
-});
+// this route does the scraping and saves to json it is working.
 
+var timerFunction0 = setTimeout(function(){
+// going to try 500 ms timeout of this first time function
 
-// this route does the scraping and saves to json
-app.get('/scrape', function(req, res){
   // Let's scrape
+  console.log("from individual scrapes");
+  // First clean the output.json
+  var json =[];
+  fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
+  console.log("json cleaned / created");
+  
+  var sitesLocal = [
+  { "website" : 'http://localhost:8000/results_Eastleigh_parkrun_weekly.html'},
+  { "website" : 'http://localhost:8000/results_Netley_Abbey_parkrun_weekly.html'},
+  { "website" : 'http://localhost:8000/results_Southampton_parkrun_weekly.html'},
+  { "website" : 'http://localhost:8000/results_Winchester_parkrun_weekly.html'}
+  ]
 
-  //  ****  Lets scrape Eastleigh  ***
-  var options = {
-    url : 'http://www.parkrun.org.uk/eastleigh/results/latestresults/',
-    // url : 'http://localhost:8000/results_Eastleigh_parkrun.html',
-    headers: {
-      'User-Agent': 'request'
-    }
-  };
-
-  request(options, function(error, response, html){
-    if(error){console.log('There was an error', error)};
-    if(!error){
-      var $ = cheerio.load(html);
-      console.log('loaded webpage eastleigh pr no errors');
-      var json =[];
-
-      $('table.sortable tbody tr').each(function(i, element){ 
-        var children = $(this).children();
-        children.each(function(){
-          if(children.eq(7).text() === "Eastleigh RC"){
-            json[children.eq(0).text()] = { "pos" : children.eq(0).text(), "parkrunner" : children.eq(1).text(), "time": children.eq(2).text(), "agecat" :  children.eq(3).text(), "agegrade" : children.eq(4).text(), "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text() };
-          }
-        }); 
-      });
-    }
-    fs.writeFile('public/output.json', JSON.stringify(json, null, 4), function(err){
-      console.log('File successfully written! - Check your project directory for the output.json file');
-    });
-  });
-// *** Lets scrape Netley *****
-   options.url = 'http://www.parkrun.org.uk/netleyabbey/results/latestresults/';
-    // url : 'http://www.parkrun.org.uk/netleyabbey/results/latestresults/',
-    // url = 'http://localhost:8000/results_Netley_Abbey_parkrun.html';
-
-    request(options, function(error, response, html){
-      if(error){console.log('There was an error', error)};
-      if(!error){
-        var $ = cheerio.load(html);
-        console.log('loaded webpage netley pr no errors');
-        var json =[];
-
-        $('table.sortable tbody tr').each(function(i, element){ 
-          var children = $(this).children();
-          children.each(function(){
-            if(children.eq(7).text() === "Eastleigh RC"){
-              json[children.eq(0).text()] = { "pos" : children.eq(0).text(), "parkrunner" : children.eq(1).text(), "time": children.eq(2).text(), "agecat" :  children.eq(3).text(), "agegrade" : children.eq(4).text(), "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text() };
-            }
-          }); 
-        });
+// now go through all the websites where there are results:
+var options = {
+      // url : 'http://www.parkrun.org.uk/eastleigh/results/latestresults/',
+      url : linksjson[0].website,
+      headers: {
+        'User-Agent': 'request'
       }
-      fs.writeFile('public/output_n.json', JSON.stringify(json, null, 4), function(err){
-        console.log('File_n successfully written! - Check your project directory for the output.json file');
-      });
-    });
+    };
+    console.log('after set options');
 
-// *** Lets scrape Southampton *****
-options.url = 'http://www.parkrun.org.uk/southampton/results/latestresults/';
-    // url : 'http://www.parkrun.org.uk/southampton/results/latestresults/',
-    // url : 'http://localhost:8000/results_Southampton_parkrun.html',
-
-    request(options, function(error, response, html){
-      if(error){console.log('There was an error', error)};
-      if(!error){
-        var $ = cheerio.load(html);
-        console.log('loaded webpage southampton pr no errors');
-        var json =[];
-
-        $('table.sortable tbody tr').each(function(i, element){ 
-          var children = $(this).children();
-          children.each(function(){
+  // THIS IS THE LOOP
+  for(website in linksjson)
+  {
+    // console.log('scraping:', sitesLocal[website].website, website);  
+    options.url = linksjson[website].website;
+      request(options, function(error, response, html){
+        if(error){console.log('There was an error', error)};
+        if(!error){
+          console.log("no error, scraping");
+          var $ = cheerio.load(html);
+          //Here, pick out the data and assign json
+          $('table.sortable tbody tr').each(function(i, element){ 
+            var children = $(this).children();
             if(children.eq(7).text() === "Eastleigh RC"){
-              json[children.eq(0).text()] = { "pos" : children.eq(0).text(), "parkrunner" : children.eq(1).text(), "time": children.eq(2).text(), "agecat" :  children.eq(3).text(), "agegrade" : children.eq(4).text(), "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text() };
-            }
-          }); 
-        });
-      }
-      fs.writeFile('public/output_s.json', JSON.stringify(json, null, 4), function(err){
-        console.log('File_n successfully written! - Check your project directory for the output.json file');
+              json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});   
+            }   
+          }); // end of each element in table sortable 
+          console.log('here the file is read and json assigned');
+          console.log("");
+         }
       });
-    });
+  }
 
-// *** Lets scrape Winchester *****
-options.url = 'http://www.parkrun.org.uk/winchester/results/latestresults/';
-    // url : 'http://www.parkrun.org.uk/winchester/results/latestresults/',
-    // url : 'http://localhost:8000/results_Winchester_parkrun.html',
+var timerFunction = setTimeout(function(){
+  console.log("should be 1 seconds later writing file");
+  fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
+  console.log("File written! - Check your output.json file");
+},1000);
+      
+//try end of first timout here
+}, 1500);
 
-    request(options, function(error, response, html){
-      if(error){console.log('There was an error', error)};
-      if(!error){
-        var $ = cheerio.load(html);
-        console.log('loaded webpage southampton pr no errors');
-        var json =[];
-
-        $('table.sortable tbody tr').each(function(i, element){ 
-          var children = $(this).children();
-          children.each(function(){
-            if(children.eq(7).text() === "Eastleigh RC"){
-              json[children.eq(0).text()] = { "pos" : children.eq(0).text(), "parkrunner" : children.eq(1).text(), "time": children.eq(2).text(), "agecat" :  children.eq(3).text(), "agegrade" : children.eq(4).text(), "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text() };
-            }
-          }); 
-        });
-      }
-      fs.writeFile('public/output_w.json', JSON.stringify(json, null, 4), function(err){
-        console.log('File_n successfully written! - Check your project directory for the output.json file');
-      });
-    });
-
-
+console.log("and this is after the subroutine before file send");
 res.sendfile('./public/results.html');
-})
-
-// TO DO :
-//  http://stackoverflow.com/questions/31358992/application-appname-failed-to-start-port-8080-not-available-on-open-shift-no
+});
 
 app.set('port', process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 5000);
 app.set('ip', process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1");
-
 app.listen(app.get('port') ,app.get('ip'), function () {
-    console.log("✔ Express server listening at %s:%d ", app.get('ip'),app.get('port'));
+  console.log("✔ Express server listening at %s:%d ", app.get('ip'),app.get('port'));
 });
 
 
-
-// listen (start app with node busController.js)  below is code that worked locally and will work on heroku
-// app.listen(process.env.PORT || 5000);
-// console.log("App listening on port 5000 or Heroku env port");
-// exports = module.exports = app;
