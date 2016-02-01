@@ -15,26 +15,19 @@ app.use(cheerio);                                 // this is the webscraper
 
 // configure routes
 app.get('/', function(req, res){  
-  console.log("home route");
+  var timerFunction0 = setTimeout(function(){
+    console.log("home route");   // why no logging ????
+  },5);
   res.sendfile('./public/index.html');
 });
 
 app.get('/results', function(req, res){
+  console.log('request to /results');
   res.sendfile('./public/results.html');
 });
 
 // this route scrapes, makes a json and sends the results view
 app.get('/scrape', function(req, res){
-  //var visitsjson = []
-  //visitsjson.push({'cookies enabled is': navigator.cookieEnabled,
-  //  'user Agent': navigator.userAgent,
-  //  'appName': navigator.appName,
-  //  'appCodeName is': navigator.appCodeName,
-  console.log("appCodeName", navigator.appCodeName);
-  //  'platform is': navigator.platform,
-  //  'product is': navigator.product})
-  //fs.appendFile('visits.json', JSON.stringify(visitsjson, null, 4));
-
   var options = {
     url : 'http://localhost:8000/results_Consolidated_parkrun.html',
     // url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
