@@ -26,8 +26,8 @@ app.get('/results', function(req, res){
 // this route scrapes, makes a json and sends the results view
 app.get('/scrape', function(req, res){
   var options = {
-    // url : 'http://localhost:8000/results_Consolidated_parkrun.html',
-    url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
+    url : 'http://localhost:8000/results_Consolidated_parkrun.html',
+    // url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
     headers: {
       'User-Agent': 'request'
     }
@@ -52,11 +52,8 @@ app.get('/scrape', function(req, res){
     });
   });  // end of the request routine
 
-// this route does the scraping and saves to json it is working.
-
 var timerFunction0 = setTimeout(function(){
 // going to try 500 ms timeout of this first time function
-
   // Let's scrape
   console.log("from individual scrapes");
   // First clean the output.json
