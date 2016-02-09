@@ -23,6 +23,24 @@ app.get('/results', function(req, res){
   res.sendfile('./public/results.html');
 });
 
+// OK HERE'S THE CALLBACK IDEA:
+//
+//  getLinks(URL, scrapeAndWrite);
+//  
+//  function getLinks(indexURL, callback){
+//    listOfLinks=blah blah blah;
+//    callback(listOfLinks);    
+//  }
+//
+//  function scrapeAndWrite(linksForScraping) {
+//    scrape all of linksForScraping;
+//    write to file;      **POTENTIAL PROB NEED ANOTHER CALLBACK?
+// }
+//
+//
+
+
+
 // this route scrapes, makes a json and sends the results view
 app.get('/scrape', function(req, res){
   var options = {
