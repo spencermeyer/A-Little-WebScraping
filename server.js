@@ -34,7 +34,6 @@ app.get('/scrape', function(req, res){
   };
   var linksjson =[];
 
-
   getLinks(options, writeLinks);
 
   function getLinks(linksSources, returnLinks){
@@ -43,7 +42,7 @@ app.get('/scrape', function(req, res){
      if(!error){console.log('not an error!')}
       console.log("something from the request to consolidated");
       var $ = cheerio.load(html);
-      console.log('loaded webpage consolodated no errors');
+      console.log('loaded webpage consolidated no errors');
       $('.floatleft a').not('.sortable').each(function(i, element){
         test=element.attribs.href;
         if(test.indexOf("weekly")!=-1){
@@ -55,14 +54,55 @@ app.get('/scrape', function(req, res){
       returnLinks(linksjson);
     });  // end of the request routine
   }
-  // ********************* 
 
   function writeLinks(listOfLinks){
     fs.writeFile('public/links.json', JSON.stringify(listOfLinks, null, 4), function(err){
           console.log('File links.json successfully written!');
+          scrapeTheSources(listOfLinks);
         });
   }
 
+  function scrapeTheSources (sourcesToScrape){
+    console.log("from the scrape function");
+    var json=[];
+    var options = {
+          url : sourcesToScrape[0].website,
+          headers: {
+            'User-Agent': 'request'
+          }
+        };
+        console.log('after set options');
+
+      // This is the scraping loop
+      for(website in sourcesToScrape)
+      { 
+        options.url = sourcesToScrape[website].website;
+          request(options, function(error, response, html){
+            if(error){console.log('There was an error', error)};
+            if(!error){
+              console.log("no error, scraping");
+              var $ = cheerio.load(html);
+              //Here, pick out the data and assign json
+              $('table.sortable tbody tr').each(function(i, element){ 
+                var children = $(this).children();
+                if(children.eq(7).text() === "Eastleigh RC"){
+                  json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});   
+                }   
+              }); // end of each element in table sortable 
+              console.log('here the file is read and json assigned');
+              console.log("scraping:",sourcesToScrape[website]);
+             }
+          });
+      }
+      console.log("finished individual scraping");
+  }
+
+
+  function writeOutput(theOutputData){
+    console.log("from the output write");
+    fs.writeFileSync('public/output.json', JSON.stringify(theOutputData, null, 4));
+    console.log("File written! - Check your output.json file");
+  }
 
 console.log("and this is after all the stuff before the view file send");
 res.sendfile('./public/results.html');
