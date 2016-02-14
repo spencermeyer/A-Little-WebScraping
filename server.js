@@ -9,7 +9,7 @@ var morgan   = require('morgan');   // log requests to the console (express4)
 var cheerio  = require('cheerio');
 
 // configuration of controller
-app.use(express.static(__dirname + '/public'));   // set the static files location /public/img will be /img for users
+app.use(express.static(__dirname + '/public'));   // set static files location /public/img will be /img for users
 app.use(morgan('dev'));                           // log every request to the console
 app.use(cheerio);                                 // this is the webscraper
 
@@ -35,48 +35,52 @@ app.get('/scrape', function(req, res){
   var linksjson =[];
 
   getLinks(options, writeLinks);
-
-  function getLinks(linksSources, returnLinks){
+  // scrapeTheSources(listOfLinks, writeOutput);
+  
+  function getLinks(linksSources, callback1){
     request(linksSources, function(error, response, html){
      if(error){console.log('There was an error', error)};
      if(!error){console.log('not an error!')}
       console.log("something from the request to consolidated");
-      var $ = cheerio.load(html);
-      console.log('loaded webpage consolidated no errors');
-      $('.floatleft a').not('.sortable').each(function(i, element){
-        test=element.attribs.href;
-        if(test.indexOf("weekly")!=-1){
-         console.log("linksjson push this:", test, i);
-         linksjson.push({"website": test});
-        }
-      });
+    var $ = cheerio.load(html);
+    console.log('loaded webpage consolidated no errors');
+    $('.floatleft a').not('.sortable').each(function(i, element){
+      test=element.attribs.href;
+      if(test.indexOf("weekly")!=-1){
+       console.log("linksjson push this:", test, i);
+       linksjson.push({"website": test});
+     }
+   });
       // now the linksjson has the links to each parkrun, write the file
-      returnLinks(linksjson);
+      callback1(linksjson);
     });  // end of the request routine
   }
 
   function writeLinks(listOfLinks){
     fs.writeFile('public/links.json', JSON.stringify(listOfLinks, null, 4), function(err){
-          console.log('File links.json successfully written!');
-          scrapeTheSources(listOfLinks);
-        });
+      console.log('File links.json successfully written!');
+
+
+
+    });
   }
 
-  function scrapeTheSources (sourcesToScrape){
-    console.log("from the scrape function");
+  function scrapeTheSources (sourcesToScrape, writeAll, callback){
+    console.log("scraping sources");
     var json=[];
     var options = {
-          url : sourcesToScrape[0].website,
-          headers: {
-            'User-Agent': 'request'
-          }
-        };
-        console.log('after set options');
+      url : sourcesToScrape[0].website,
+      headers: {
+        'User-Agent': 'request'
+      }
+    };
+    console.log('after set options');
 
       // This is the scraping loop
-      for(website in sourcesToScrape)
-      { 
-        options.url = sourcesToScrape[website].website;
+        for(website in sourcesToScrape)
+        { 
+          options.url = sourcesToScrape[website].website;
+          // console.log("scrapesources:",sourcesToScrape[website].website)
           request(options, function(error, response, html){
             if(error){console.log('There was an error', error)};
             if(!error){
@@ -90,19 +94,25 @@ app.get('/scrape', function(req, res){
                 }   
               }); // end of each element in table sortable 
               console.log('here the file is read and json assigned');
-              console.log("scraping:",sourcesToScrape[website]);
-             }
+              console.log("scraping:",sourcesToScrape[website].website);
+            }
           });
-      }
-      console.log("finished individual scraping");
-  }
+      callback();
+    }
+  
+console.log("finished individual scraping");
+writeAll(json);
+}
 
 
-  function writeOutput(theOutputData){
-    console.log("from the output write");
-    fs.writeFileSync('public/output.json', JSON.stringify(theOutputData, null, 4));
-    console.log("File written! - Check your output.json file");
-  }
+function writeOutput(theOutputData){
+
+
+  
+  console.log("from the output write");
+  fs.writeFileSync('public/output.json', JSON.stringify(theOutputData, null, 4));
+  console.log("File written! - Check your output.json file");
+}
 
 console.log("and this is after all the stuff before the view file send");
 res.sendfile('./public/results.html');

@@ -1,11 +1,7 @@
-var timerFunction0 = setTimeout(function(){
-// going to try 500 ms timeout of this first time function
+
   // Let's scrape
   console.log("from individual scrapes");
-  // First clean the output.json
-  var json =[];
-  fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
-  console.log("json cleaned / created");
+  
   
 // now go through all the websites where there are results:
 var options = {
@@ -38,11 +34,15 @@ var options = {
       });
   }
 
-var timerFunction = setTimeout(function(){
-  console.log("should be 1 seconds later writing file");
-  fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
-  console.log("File written! - Check your output.json file");
-},1000);
+
       
-//try end of first timout here
-}, 1500);
+
+
+
+
+
+// keep this is we need to clean the json file first:
+// First clean the output.json
+var json =[];
+fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
+console.log("json cleaned / created");
