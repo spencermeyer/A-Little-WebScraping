@@ -53,24 +53,23 @@ app.get('/scrape', function(req, res){
   });  // end of the request routine
 
 var timerFunction0 = setTimeout(function(){
-// going to try 500 ms timeout of this first time function
+// this route does the scraping and saves to json it is working.
   // Let's scrape
   console.log("from individual scrapes");
   // First clean the output.json
   var json =[];
   fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
   console.log("json cleaned / created");
-  
-// now go through all the websites where there are results:
-var options = {
+  // now go through all the websites where there are results:
+  var options = {
       url : linksjson[0].website,
       headers: {
         'User-Agent': 'request'
       }
-    };
-    console.log('after set options');
+  };
+  console.log('after set options');
 
-  // THIS IS THE LOOP
+  // Here, iterate through each link and extract the data
   for(website in linksjson)
   { 
     options.url = linksjson[website].website;
@@ -99,7 +98,7 @@ var timerFunction = setTimeout(function(){
 },1000);
       
 //try end of first timout here
-}, 1500);
+}, 2000);
 
 console.log("and this is after the subroutine before file send");
 res.sendfile('./public/results.html');
