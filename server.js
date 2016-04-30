@@ -35,10 +35,9 @@ app.get('/scrape', function(req, res){
   var linksjson =[];
 
   getLinks(options);
+  varScrapingTheLinks = setTimeout(scrapeTheSources(linksjson), 2000);
 
-
-
-  function getLinks(linksSourcesArg, callback){
+  function getLinks(linksSourcesArg){
     console.log("starting to get sources");
     request(linksSourcesArg, function(error, response, html){
      if(error){console.log('There was an error', error)};
@@ -48,48 +47,47 @@ app.get('/scrape', function(req, res){
     console.log('loaded webpage consolidated no errors');
     $('.floatleft a').not('.sortable').each(function(i, element){
       test=element.attribs.href;
-        if(test.indexOf("weekly")!=-1){
-         console.log("linksjson push this:", test, i);
-         linksjson.push({"website": test});
-        }
-      });
+      if(test.indexOf("weekly")!=-1){
+       console.log("linksjson push this:", test, i);
+       linksjson.push({"website": test});
+     }
+   });
     });  // end of the request routine
-    // return linksjson;
-    callback && callback();
+    return linksjson;
   };
 
-  function scrapeTheSources(sourcesToScrape){
-    console.log("scraping sources");
-    var json=[];
-    var options = {
-      url : sourcesToScrape[0].website,
-      headers: {
-        'User-Agent': 'request'
+function scrapeTheSources(sourcesToScrape){
+  console.log("scraping sources");
+  var json=[];
+  var options = {
+    url : sourcesToScrape[0].website,
+    headers: {
+      'User-Agent': 'request'
+    }
+  };
+  console.log('after set options');
+    // This is the scraping loop
+    for(website in sourcesToScrape)
+    { 
+      options.url = sourcesToScrape[website].website;
+        // console.log("scrapesources:",sourcesToScrape[website].website)
+        request(options, function(error, response, html){
+          if(error){console.log('There was an error', error)};
+          if(!error){
+            console.log("no error, scraping");
+            var $ = cheerio.load(html);
+            //Here, pick out the data and assign json
+            $('table.sortable tbody tr').each(function(i, element){ 
+              var children = $(this).children();
+              if(children.eq(7).text() === "Eastleigh RC"){
+                json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});   
+              }   
+            }); // end of each element in table sortable 
+            console.log('here the file is read and json assigned');
+            console.log("scraping:",sourcesToScrape[website].website);
+          }
+        });
       }
-    };
-    console.log('after set options');
-      // This is the scraping loop
-        for(website in sourcesToScrape)
-        { 
-          options.url = sourcesToScrape[website].website;
-          // console.log("scrapesources:",sourcesToScrape[website].website)
-          request(options, function(error, response, html){
-            if(error){console.log('There was an error', error)};
-            if(!error){
-              console.log("no error, scraping");
-              var $ = cheerio.load(html);
-              //Here, pick out the data and assign json
-              $('table.sortable tbody tr').each(function(i, element){ 
-                var children = $(this).children();
-                if(children.eq(7).text() === "Eastleigh RC"){
-                  json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});   
-                }   
-              }); // end of each element in table sortable 
-              console.log('here the file is read and json assigned');
-              console.log("scraping:",sourcesToScrape[website].website);
-            }
-          });
-        }
 // writeCallback(json);
 console.log("finished individual scraping");
 return json;
