@@ -1,2 +1,0 @@
-this is some demo text
-i wonder if I can load it into the DOM ?

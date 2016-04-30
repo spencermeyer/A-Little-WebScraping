@@ -2,11 +2,11 @@
 
 // Build a controller
 var express  = require('express');
-var fs       = require('fs');
-var request  = require('request');
+var fs       = require('fs');       // for writing json files
+var request  = require('request');  // http get
 var app      = express();           // create our app w/ express
 var morgan   = require('morgan');   // log requests to the console (express4)
-var cheerio  = require('cheerio');
+var cheerio  = require('cheerio');  // scrapes the request
 
 // configuration of controller
 app.use(express.static(__dirname + '/public'));   // set the static files location /public/img will be /img for users

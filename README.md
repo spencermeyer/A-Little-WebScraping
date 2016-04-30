@@ -8,7 +8,7 @@ With the particular websites I am scraping, I do not know in advance where they 
 
 I upload the JSON and inject it into the view as a table.
 
-Making the code save the data to a file required a time out as I found that the JavaScript proceeds too fast and tries to write a file before the data is available.
+Making the code save the data to a file required a time out as I found that the JavaScript proceeds too fast and tries to write a file before the data is available.  I tried nested function calls, callbacks, underscore js's delay, promises, and async js's series, but they all fail, probably because a HTTP call will be async anyway and take it's time and not hold up the flow of the program.
 
 Here are links to the examples I followed to basically get me up and running:
   http://blog.miguelgrinberg.com/post/easy-web-scraping-with-nodejs
