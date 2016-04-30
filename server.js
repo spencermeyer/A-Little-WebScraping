@@ -7,6 +7,7 @@ var request  = require('request');
 var app      = express();           // create our app w/ express
 var morgan   = require('morgan');   // log requests to the console (express4)
 var cheerio  = require('cheerio');
+var _        = require('underscore');
 
 // configuration of controller
 app.use(express.static(__dirname + '/public'));   // set static files location /public/img will be /img for users
@@ -33,39 +34,43 @@ app.get('/scrape', function(req, res){
     }
   };
   var linksjson =[];
-
-  getLinks(options, writeLinks);
-  // scrapeTheSources(listOfLinks, writeOutput);
+  getLinks(options);
+  _.defer(blah);
   
-  function getLinks(linksSources, callback1){
-    request(linksSources, function(error, response, html){
+  // problem: launches straight into scrapeTheSources without waiting.
+  // scrapeTheSources(getLinks(options));
+  // writeOutput(json);
+
+  function getLinks(linksSourcesArg){
+    console.log("starting to get sources");
+    request(linksSourcesArg, function(error, response, html){
      if(error){console.log('There was an error', error)};
      if(!error){console.log('not an error!')}
-      console.log("something from the request to consolidated");
+      console.log("getting consolidated links");
     var $ = cheerio.load(html);
     console.log('loaded webpage consolidated no errors');
     $('.floatleft a').not('.sortable').each(function(i, element){
       test=element.attribs.href;
-      if(test.indexOf("weekly")!=-1){
-       console.log("linksjson push this:", test, i);
-       linksjson.push({"website": test});
-     }
-   });
-      // now the linksjson has the links to each parkrun, write the file
-      callback1(linksjson);
+        if(test.indexOf("weekly")!=-1){
+         console.log("linksjson push this:", test, i);
+         linksjson.push({"website": test});
+        }
+      });
+      // now the linksjson has the links to each parkrun
     });  // end of the request routine
-  }
-
-  function writeLinks(listOfLinks){
-    fs.writeFile('public/links.json', JSON.stringify(listOfLinks, null, 4), function(err){
+    fs.writeFile('public/links.json', JSON.stringify(linksjson, null, 4), function(err){
       console.log('File links.json successfully written!');
-
-
-
     });
+    // callback();
   }
+  app.redirect ('/scrape2');
+}
 
-  function scrapeTheSources (sourcesToScrape, writeAll, callback){
+  app.get('/scrape2', function(req, res){
+
+  linksjson = JSON.parse(fs.readFile('public/links.json'));
+
+  function scrapeTheSources(linksjson){
     console.log("scraping sources");
     var json=[];
     var options = {
@@ -75,7 +80,6 @@ app.get('/scrape', function(req, res){
       }
     };
     console.log('after set options');
-
       // This is the scraping loop
         for(website in sourcesToScrape)
         { 
@@ -97,18 +101,13 @@ app.get('/scrape', function(req, res){
               console.log("scraping:",sourcesToScrape[website].website);
             }
           });
-      callback();
-    }
-  
+        }
+// writeCallback(json);
 console.log("finished individual scraping");
-writeAll(json);
+return json;
 }
 
-
 function writeOutput(theOutputData){
-
-
-  
   console.log("from the output write");
   fs.writeFileSync('public/output.json', JSON.stringify(theOutputData, null, 4));
   console.log("File written! - Check your output.json file");
@@ -117,6 +116,8 @@ function writeOutput(theOutputData){
 console.log("and this is after all the stuff before the view file send");
 res.sendfile('./public/results.html');
 });
+
+
 
 app.set('port', process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 5000);
 app.set('ip', process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1");
