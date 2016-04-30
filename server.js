@@ -7,7 +7,6 @@ var request  = require('request');
 var app      = express();           // create our app w/ express
 var morgan   = require('morgan');   // log requests to the console (express4)
 var cheerio  = require('cheerio');
-var _        = require('underscore');
 
 // configuration of controller
 app.use(express.static(__dirname + '/public'));   // set static files location /public/img will be /img for users
@@ -33,16 +32,14 @@ app.get('/scrape', function(req, res){
       'User-Agent': 'request'
     }
   };
-  
-  scrapeTheSources(getLinks(options));
-  
-  // problem: launches straight into scrapeTheSources without waiting.
-  // scrapeTheSources(getLinks(options));
-  // writeOutput(json);
+  var linksjson =[];
 
-  function getLinks(linksSourcesArg){
+  getLinks(options);
+
+
+
+  function getLinks(linksSourcesArg, callback){
     console.log("starting to get sources");
-    var linksjson =[];
     request(linksSourcesArg, function(error, response, html){
      if(error){console.log('There was an error', error)};
      if(!error){console.log('not an error!')}
@@ -56,13 +53,10 @@ app.get('/scrape', function(req, res){
          linksjson.push({"website": test});
         }
       });
-      // now the linksjson has the links to each parkrun
     });  // end of the request routine
-    //  fs.writeFile('public/links.json', JSON.stringify(linksjson, null, 4), function(err){
-    //    console.log('File links.json successfully written!');
-    //  });
-    return linksjson;
-  }
+    // return linksjson;
+    callback && callback();
+  };
 
   function scrapeTheSources(sourcesToScrape){
     console.log("scraping sources");
@@ -104,14 +98,17 @@ return json;
 function writeOutput(theOutputData){
   console.log("from the output write");
   fs.writeFileSync('public/output.json', JSON.stringify(theOutputData, null, 4));
+  fs.writeFileSync('public/links.json', JSON.stringify(linksjson, null, 4), function(err){
+    console.log('File links.json successfully written!');
+  });
+
+
   console.log("File written! - Check your output.json file");
 }
 
 console.log("and this is after all the stuff before the view file send");
 res.sendfile('./public/results.html');
 });
-
-
 
 app.set('port', process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 5000);
 app.set('ip', process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1");

@@ -8,7 +8,7 @@ With the particular websites I am scraping, I do not know in advance where they 
 
 I upload the JSON and inject it into the view as a table.
 
-Making the code save the data to a file required a time out as I found that the JavaScript proceeds too fast and tries to write a file before the data is available.
+Making the code save the data to a file required a time out as I found that the JavaScript proceeds too fast and tries to write a file before the data is available.  Using callbacks did not solve this problem, I think because the HTTP request is set up to be asynchronous regardless and the rest of the function will continue and then callback without its data.  I've tried using JS promises, underscore's delay, and async js's series, but they all have the same problem.
 
 Here are links to the examples I followed to basically get me up and running:
   http://blog.miguelgrinberg.com/post/easy-web-scraping-with-nodejs
@@ -24,5 +24,7 @@ Don't use nodemon server.js   because the json file changes in the middle of the
 To Do:
   1) get the node ignore file working so that I can use nodemon.
   2) Add lots more styling !
+
+
 
 
