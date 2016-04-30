@@ -33,9 +33,8 @@ app.get('/scrape', function(req, res){
       'User-Agent': 'request'
     }
   };
-  var linksjson =[];
-  getLinks(options);
-  _.defer(blah);
+  
+  scrapeTheSources(getLinks(options));
   
   // problem: launches straight into scrapeTheSources without waiting.
   // scrapeTheSources(getLinks(options));
@@ -43,6 +42,7 @@ app.get('/scrape', function(req, res){
 
   function getLinks(linksSourcesArg){
     console.log("starting to get sources");
+    var linksjson =[];
     request(linksSourcesArg, function(error, response, html){
      if(error){console.log('There was an error', error)};
      if(!error){console.log('not an error!')}
@@ -58,19 +58,13 @@ app.get('/scrape', function(req, res){
       });
       // now the linksjson has the links to each parkrun
     });  // end of the request routine
-    fs.writeFile('public/links.json', JSON.stringify(linksjson, null, 4), function(err){
-      console.log('File links.json successfully written!');
-    });
-    // callback();
+    //  fs.writeFile('public/links.json', JSON.stringify(linksjson, null, 4), function(err){
+    //    console.log('File links.json successfully written!');
+    //  });
+    return linksjson;
   }
-  app.redirect ('/scrape2');
-}
 
-  app.get('/scrape2', function(req, res){
-
-  linksjson = JSON.parse(fs.readFile('public/links.json'));
-
-  function scrapeTheSources(linksjson){
+  function scrapeTheSources(sourcesToScrape){
     console.log("scraping sources");
     var json=[];
     var options = {
