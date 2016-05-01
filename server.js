@@ -26,15 +26,13 @@ app.get('/results', function(req, res){
 // this route scrapes, makes a json and sends the results view
 app.get('/scrape', function(req, res){
   var options = {
-    // url : 'http://localhost:8000/results_Consolidated_parkrun.html',
-    url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
+    url : 'http://localhost:8000/results_Consolidated_parkrun.html',
+    // url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
     headers: {
       'User-Agent': 'request'
     }
   };
   analsjson=[]
-  console.log("requester user-agent:", req.headers['user-agent']);
-  console.log("requester ip:", req.headers['x-forwarded-for']);
   var time = new Date();
   var year = time.getFullYear();
   var month = time.getMonth()+1;
@@ -44,11 +42,10 @@ app.get('/scrape', function(req, res){
   var seconds = time.getSeconds();
   var timeDate= "Time "+  year + "-" + month+"-"+date1+" "+hour+":"+minutes+":"+seconds;
   console.log(timeDate);
-  analsjson.push({"TimeAndDate": timeDate})
+  analsjson.push({"TimeAndDate": timeDate, "UserAgent": req.headers['user-agent'], "UserIP":req.headers['x-forwarded-for'] })
   fs.appendFile('public/analytics.json', JSON.stringify(analsjson, null, 4), function (err) {
     console.log("analtics written");
   });
-
 
   var linksjson =[];
   // Stage One: Get all the relevant Links:
