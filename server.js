@@ -33,6 +33,7 @@ app.get('/scrape', function(req, res){
     }
   };
   var linksjson =[];
+  // Stage One: Get all the relevant Links:
   request(options, function(error, response, html){
     if(error){console.log('There was an error', error)};
     if(!error){console.log('not an error!')}
@@ -52,6 +53,7 @@ app.get('/scrape', function(req, res){
     });
   });  // end of the request routine
 
+// Stage Two: Scrape the Links for Relevant Data:
 var timerFunction0 = setTimeout(function(){
 // this route does the scraping and saves to json it is working.
   // Let's scrape
@@ -68,7 +70,6 @@ var timerFunction0 = setTimeout(function(){
       }
   };
   console.log('after set options');
-
   // Here, iterate through each link and extract the data
   for(website in linksjson)
   { 
@@ -90,18 +91,18 @@ var timerFunction0 = setTimeout(function(){
          }
       });
   }
-
-var timerFunction = setTimeout(function(){
-  console.log("should be 1 seconds later writing file");
-  fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
-  console.log("File written! - Check your output.json file");
-},1000);
-      
-//try end of first timout here
-}, 2000);
+  var timerFunction1 = setTimeout(function(){
+    console.log("should be 1 seconds later writing file");
+    fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
+    console.log("File written! - Check your output.json file");
+  },1000);
+}, 2500);
 
 console.log("and this is after the subroutine before file send");
+var timerFunction2 = setTimeout(function(){
 res.sendfile('./public/results.html');
+}, 3600);
+
 });
 
 app.set('port', process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 5000);

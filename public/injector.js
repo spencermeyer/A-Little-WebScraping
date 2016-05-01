@@ -35,6 +35,6 @@ $( document ).ready(function() {
       $('#inject_here').append(htmltoappend);
     });
   console.log("Injected2 ?");
-  },2500);
+  },4000);
 
 });
