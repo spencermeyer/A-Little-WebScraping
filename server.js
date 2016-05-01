@@ -32,6 +32,24 @@ app.get('/scrape', function(req, res){
       'User-Agent': 'request'
     }
   };
+  analsjson=[]
+  console.log("requester user-agent:", req.headers['user-agent']);
+  console.log("requester ip:", req.headers['x-forwarded-for']);
+  var time = new Date();
+  var year = time.getFullYear();
+  var month = time.getMonth()+1;
+  var date1 = time.getDate();
+  var hour = time.getHours();
+  var minutes = time.getMinutes();
+  var seconds = time.getSeconds();
+  var timeDate= "Time "+  year + "-" + month+"-"+date1+" "+hour+":"+minutes+":"+seconds;
+  console.log(timeDate);
+  analsjson.push({"TimeAndDate": timeDate})
+  fs.appendFile('public/analytics.json', JSON.stringify(analsjson, null, 4), function (err) {
+    console.log("analtics written");
+  });
+
+
   var linksjson =[];
   // Stage One: Get all the relevant Links:
   request(options, function(error, response, html){
@@ -95,7 +113,7 @@ var timerFunction0 = setTimeout(function(){
     console.log("should be 1 seconds later writing file");
     fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
     console.log("File written! - Check your output.json file");
-  },1000);
+  },1500);
 }, 1500);
 
 console.log("and this is after the subroutine before file send");
