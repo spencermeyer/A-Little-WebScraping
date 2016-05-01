@@ -96,7 +96,7 @@ var timerFunction0 = setTimeout(function(){
     fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
     console.log("File written! - Check your output.json file");
   },1000);
-}, 2500);
+}, 1500);
 
 console.log("and this is after the subroutine before file send");
 var timerFunction2 = setTimeout(function(){
