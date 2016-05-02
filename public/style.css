@@ -9,13 +9,15 @@ th #gender, td #gender{
   /*  not working */
 }
 
-
 .newpb {
   background-color: yellow;
 }
 .nopb {
 }
 
+.fast-age {
+  background-color: #ff6666
+}
 
 
 

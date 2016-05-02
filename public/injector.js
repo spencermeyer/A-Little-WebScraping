@@ -17,6 +17,7 @@ $( document ).ready(function() {
 
   var timerFunction2 = setTimeout(function(){
     var pbclass="nopb";
+    var ageCatClass="normal-age";
     console.log("should be 1.5 seconds after loading");
     $.getJSON("output.json", function (result) {
       console.log('got some json?', result.length);
@@ -26,9 +27,15 @@ $( document ).ready(function() {
       htmltoappend = htmltoappend + '</thead><tbody>'
 
       for (i = 0; i < result.length; i++) {
-        htmltoappend = htmltoappend + '<tr class="row">' + '<td>' + result[i].parkrun.split(" ")[0] + '</td><td>'+ result[i].parkrun.substr(result[i].parkrun.length-10) + '</td><td class="position">' + result[i].pos + '</td><td class="parkrunner">' + result[i].parkrunner + '</td>' + '<td class="time">' + result[i].time + '</td>' + '<td class="agecat">' + result[i].agecat + '</td>' + '<td class="agegrade">' + result[i].agegrade + '</td>' + '<td id="gender">' + result[i].gender + '</td>' + '<td class="genderpos">' + result[i].genderpos + '</td>';
+        htmltoappend = htmltoappend + '<tr class="row">' + '<td>' + result[i].parkrun.split(" ")[0] + '</td><td>'+ result[i].parkrun.substr(result[i].parkrun.length-10) + '</td><td class="position">' + result[i].pos + '</td><td class="parkrunner">' + result[i].parkrunner + '</td>' + '<td class="time">' + result[i].time + '</td>' + '<td class="agecat">' + result[i].agecat + '</td>';
+        if(parseFloat(result[i].agegrade) > 70){console.log(ageCatClass="fast-age")}else{ageCatClass="normal-age"};
+
+        htmltoappend = htmltoappend + '<td class="agegrade ' + ageCatClass +  '"">' + result[i].agegrade + '</td>' + '<td id="gender">' + result[i].gender + '</td>' + '<td class="genderpos">' + result[i].genderpos + '</td>';
+
         if(result[i].Note =="New PB!"){pbclass="newpb"}else{pbclass="nopb"};
+
         htmltoappend = htmltoappend + '<td class="note '+pbclass + '">' + result[i].Note + '</td>';
+
         htmltoappend = htmltoappend + '<td class="totalruns">' + result[i].TotalRuns + '</th>' + '</tr>';
       }
       htmltoappend = htmltoappend + '</tbody>' + '</table>';
@@ -36,5 +43,4 @@ $( document ).ready(function() {
     });
   console.log("Injected2 ?");
   },4000);
-
 });
