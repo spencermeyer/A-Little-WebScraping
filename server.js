@@ -26,13 +26,13 @@ app.get('/results', function(req, res){
 // this route scrapes, makes a json and sends the results view
 app.get('/scrape', function(req, res){
   var options = {
-    // url : 'http://localhost:8000/results_Consolidated_parkrun.html',
-    url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
+    url : 'http://localhost:8000/results_Consolidated_parkrun.html',
+    // url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
     headers: {
       'User-Agent': 'request'
     }
   };
-  analsjson=[]
+  analsjson=[];
   var time = new Date();
   var year = time.getFullYear();
   var month = time.getMonth()+1;
@@ -75,6 +75,7 @@ var timerFunction0 = setTimeout(function(){
   console.log("from individual scrapes");
   // First clean the output.json
   var json =[];
+  agecats = {};
   fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
   console.log("json cleaned / created");
   // now go through all the websites where there are results:
@@ -97,8 +98,16 @@ var timerFunction0 = setTimeout(function(){
           //Here, pick out the data and assign json
           $('table.sortable tbody tr').each(function(i, element){ 
             var children = $(this).children();
+            //  here work out the age gradings.
+            agecat=children.eq(3).text()
+            if(agecat in agecats){
+              agecats[agecat]=agecats[agecat]+1;
+            }else{
+              agecats[agecat]=1;
+            }
+            console.log("cs agecat", agecat, agecats[agecat]);
             if(children.eq(7).text() === "Eastleigh RC"){
-              json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});   
+              json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "AgeRank" : agecats[agecat], "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});   
             }   
           }); // end of each element in table sortable 
           console.log('here the file is read and json assigned');
