@@ -29,7 +29,7 @@ $( document ).ready(function() {
 
       for (i = 0; i < result.length; i++) {
 
-        if(result[i].AgeRank < 5){agePosClass="good-in-age"}else{agePosClass="normal-age"};
+        if(result[i].AgeRank < 2){agePosClass="good-in-age"}else{agePosClass="normal-age"};
         if(parseFloat(result[i].agegrade) > 70){ ageCatClass="fast-age" }else{ageCatClass="normal-age"};
         if(result[i].Note =="New PB!"){pbclass="newpb"}else{pbclass="nopb"};
 

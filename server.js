@@ -26,7 +26,7 @@ app.get('/results', function(req, res){
 // this route scrapes, makes a json and sends the results view
 app.get('/scrape', function(req, res){
   var options = {
-    //url : 'http://localhost:8000/results_Consolidated_parkrun.html',
+    // url : 'http://localhost:8000/results_Consolidated_parkrun.html',
     url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
     headers: {
       'User-Agent': 'request'
@@ -75,7 +75,7 @@ var timerFunction0 = setTimeout(function(){
   console.log("from individual scrapes");
   // First clean the output.json
   var json =[];
-  agecats = {};
+  var agecats=[];
   fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
   console.log("json cleaned / created");
   // now go through all the websites where there are results:
@@ -86,28 +86,32 @@ var timerFunction0 = setTimeout(function(){
       }
   };
   console.log('after set options');
-  // Here, iterate through each link and extract the data
+  // Here, iterate through each link and extract the data from each website
   for(website in linksjson)
   { 
     options.url = linksjson[website].website;
+      console.log("indiv scrapes, here is the website"); /// here website is 0,1,2,3 .....
       request(options, function(error, response, html){
         if(error){console.log('There was an error', error)};
         if(!error){
-          console.log("no error, scraping");
+          console.log("no error, scraping, website id is ");
           var $ = cheerio.load(html);
-          //Here, pick out the data and assign json
+          // here pick out the title
+          var runTitle=$('h2').text();
+          agecats[runTitle]={}
+          //Here, pick out the data and assign json iterate each table row
           $('table.sortable tbody tr').each(function(i, element){ 
             var children = $(this).children();
             //  here work out the age gradings.
-            agecat=children.eq(3).text()
-            if(agecat in agecats){
-              agecats[agecat]=agecats[agecat]+1;
+            agecat=children.eq(3).text();
+            if(agecat in agecats[runTitle]){
+              agecats[runTitle][agecat]=agecats[runTitle][agecat]+1;
             }else{
-              agecats[agecat]=1;
+              agecats[runTitle][agecat]=1;
             }
-            console.log("cs agecat", agecat, agecats[agecat]);
+            console.log("indivdual runs ids agecat", agecat, agecats[runTitle][agecat]);
             if(children.eq(7).text() === "Eastleigh RC"){
-              json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "AgeRank" : agecats[agecat], "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});   
+              json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "AgeRank" : agecats[runTitle][agecat], "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});   
             }   
           }); // end of each element in table sortable 
           console.log('here the file is read and json assigned');
