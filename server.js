@@ -72,10 +72,12 @@ app.get('/scrape', function(req, res){
 var timerFunction0 = setTimeout(function(){
 // this route does the scraping and saves to json it is working.
   // Let's scrape
-  console.log("from individual scrapes");
+  // console.log("from individual scrapes");
   // First clean the output.json
   var json =[];
   var agecats=[];
+  var numberOfMen=[];
+  var numberOfWomen=[];
   fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
   console.log("json cleaned / created");
   // now go through all the websites where there are results:
@@ -99,6 +101,9 @@ var timerFunction0 = setTimeout(function(){
           // here pick out the title
           var runTitle=$('h2').text();
           agecats[runTitle]={}
+          numberOfMen[runTitle]=0;
+          numberOfWomen[runTitle]=0;
+          //numberOfWomen[runTitle]=0;
           //Here, pick out the data and assign json iterate each table row
           $('table.sortable tbody tr').each(function(i, element){ 
             var children = $(this).children();
@@ -109,9 +114,13 @@ var timerFunction0 = setTimeout(function(){
             }else{
               agecats[runTitle][agecat]=1;
             }
-            console.log("indivdual runs ids agecat", agecat, agecats[runTitle][agecat]);
+            // console.log("indivdual runs ids agecat", agecat, agecats[runTitle][agecat]);
             if(children.eq(7).text() === "Eastleigh RC"){
-              json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "AgeRank" : agecats[runTitle][agecat], "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});   
+              json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "AgeRank" : agecats[runTitle][agecat], "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});
+              if(children.eq(5).text()==="M"){numberOfMen[runTitle]=numberOfMen[runTitle]+1};
+              if(children.eq(5).text()==="F"){numberOfWomen[runTitle]=numberOfWomen[runTitle]+1};
+              console.log("numberOfMen", numberOfMen[runTitle]);                 
+              console.log("numberOfWomen", numberOfWomen[runTitle]);                 
             }   
           }); // end of each element in table sortable 
           console.log('here the file is read and json assigned');
@@ -129,7 +138,7 @@ var timerFunction0 = setTimeout(function(){
 console.log("and this is after the subroutine before file send");
 var timerFunction2 = setTimeout(function(){
 res.sendfile('./public/results.html');
-}, 3600);
+}, 3900);
 
 });
 
