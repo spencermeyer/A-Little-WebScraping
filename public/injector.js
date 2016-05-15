@@ -9,7 +9,7 @@ $( document ).ready(function() {
       $.getJSON("links.json", function (links) {
         console.log("got links", links[0].website)
         for (i = 0; i < links.length; i++) {
-          htmlIntro=htmlIntro + '<div class="intro-links"><a href="' + links[i].website + '">' + links[i].website + '</a>' + '<span class="more-info">Hello</span></div><br>'
+          htmlIntro=htmlIntro + '<div class="intro-links"><a href="' + links[i].website + '">' + links[i].website + '</a>' + '<span id="more-info' + i + '"></span></div><br>'
           //<p class="nextinject">hello</p></span>'
         }
         $('#inject_here').append(htmlIntro);
