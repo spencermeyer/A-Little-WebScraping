@@ -23,3 +23,10 @@ th #gender, td #gender{
 .good-in-age {
   background-color: #00ff00 
 }
+.intro-links {
+  white-space: nowrap;
+}
+a {
+ white-space: nowrap; 
+}
+
