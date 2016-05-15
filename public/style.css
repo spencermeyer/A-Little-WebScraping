@@ -1,4 +1,6 @@
-
+th {
+  background-color: #cccccc
+}
 td, th {
   width: 10%;
   text-align: center;
@@ -10,7 +12,7 @@ th #gender, td #gender{
 }
 
 .newpb {
-  background-color: yellow;
+  background-color: yellow
 }
 .nopb {
 }
@@ -21,15 +23,3 @@ th #gender, td #gender{
 .good-in-age {
   background-color: #00ff00 
 }
-
-
-
-
-
-
-
-
-
-
-
-
