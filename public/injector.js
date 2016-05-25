@@ -9,12 +9,27 @@ $( document ).ready(function() {
       $.getJSON("links.json", function (links) {
         console.log("got links", links[0].website)
         for (i = 0; i < links.length; i++) {
-          htmlIntro=htmlIntro + '<div class="intro-links"><a href="' + links[i].website + '">' + links[i].website + '</a>' + '<span id="more-info' + i + '"></span></div><br>'
+          htmlIntro=htmlIntro + '<div class="intro-links"><a href="' + links[i].website + '">' + links[i].website + '</a>' + '<span id="more-info' + i + '"></span><p id="blah"></p></div><br>'
           //<p class="nextinject">hello</p></span>'
         }
         $('#inject_here').append(htmlIntro);
       });
   },1000);
+
+
+    // TO DO : make a id in the links header and append the counts.
+    //  .slice(a.indexOf('uk/')+3, a.indexOf('/results'));
+
+  var timerFunction3 = setTimeout(function(){
+    $.getJSON("counts.json", function(links){
+      console.log("got the counts");
+      for (i = 0; i < links.length; i++) {
+        console.log("from count", links[i].runTitle, links[i].numberOfMen, links[i].numberOfWomen );
+      }
+    });
+    console.log("injecting men count");
+    document.getElementById("blah").innerHTML="stuff";
+  },2000);
 
   var timerFunction2 = setTimeout(function(){
     var pbclass="nopb";

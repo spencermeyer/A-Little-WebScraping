@@ -125,7 +125,7 @@ var timerFunction0 = setTimeout(function(){
           console.log('here the file is read and json assigned');
           console.log("");
          }
-              console.log("runtitle:", runTitle, "numberOfMen", numberOfMen[runTitle]);                 
+              console.log("website:", website, "numberOfMen", numberOfMen[runTitle]);                 
               console.log("numberOfWomen", numberOfWomen[runTitle]);
               countsjson.push({ "runTitle" : runTitle, "numberOfMen" : numberOfMen[runTitle], "numberOfWomen" : numberOfWomen[runTitle] });
       });
