@@ -41,7 +41,7 @@ app.get('/scrape', function(req, res){
   var minutes = time.getMinutes();
   var seconds = time.getSeconds();
   var timeDate= "Time "+  year + "-" + month+"-"+date1+" "+hour+":"+minutes+":"+seconds;
-  console.log(timeDate);
+  //console.log(timeDate);
   analsjson.push({"TimeAndDate": timeDate, "UserAgent": req.headers['user-agent'], "UserIP":req.headers['x-forwarded-for'] })
   fs.appendFile('public/analytics.json', JSON.stringify(analsjson, null, 4), function (err) {
     console.log("analtics written");
@@ -58,13 +58,13 @@ app.get('/scrape', function(req, res){
     $('.floatleft a').not('.sortable').each(function(i, element){
       test=element.attribs.href;
       if(test.indexOf("weekly")!=-1){
-        console.log("linksjson push this:", test, i);
+        //console.log("linksjson push this:", test, i);
         linksjson.push({"website": test});
       }
     });
     // now the linksjson has the links to each parkrun, write the file
     fs.writeFile('public/links.json', JSON.stringify(linksjson, null, 4), function(err){
-      console.log('File links.json successfully written! - Check your project directory for the links.json file');
+      //console.log('File links.json successfully written! - Check your project directory for the links.json file');
     });
   });  // end of the request routine
 
@@ -76,10 +76,11 @@ var timerFunction0 = setTimeout(function(){
   // First clean the output.json
   var json =[];
   var agecats=[];
+  var countsjson=[];
   var numberOfMen=[];
   var numberOfWomen=[];
   fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
-  console.log("json cleaned / created");
+  // console.log("json cleaned / created");
   // now go through all the websites where there are results:
   var options = {
       url : linksjson[0].website,
@@ -87,12 +88,12 @@ var timerFunction0 = setTimeout(function(){
         'User-Agent': 'request'
       }
   };
-  console.log('after set options');
+  // console.log('after set options');
   // Here, iterate through each link and extract the data from each website
   for(website in linksjson)
   { 
     options.url = linksjson[website].website;
-      console.log("indiv scrapes, here is the website"); /// here website is 0,1,2,3 .....
+      // console.log("indiv scrapes, here is the website"); /// here website is 0,1,2,3 .....
       request(options, function(error, response, html){
         if(error){console.log('There was an error', error)};
         if(!error){
@@ -119,26 +120,31 @@ var timerFunction0 = setTimeout(function(){
               json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "AgeRank" : agecats[runTitle][agecat], "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});
               if(children.eq(5).text()==="M"){numberOfMen[runTitle]=numberOfMen[runTitle]+1};
               if(children.eq(5).text()==="F"){numberOfWomen[runTitle]=numberOfWomen[runTitle]+1};
-              console.log("numberOfMen", numberOfMen[runTitle]);                 
-              console.log("numberOfWomen", numberOfWomen[runTitle]);                 
             }   
           }); // end of each element in table sortable 
           console.log('here the file is read and json assigned');
           console.log("");
          }
+              console.log("runtitle:", runTitle, "numberOfMen", numberOfMen[runTitle]);                 
+              console.log("numberOfWomen", numberOfWomen[runTitle]);
+              countsjson.push({ "runTitle" : runTitle, "numberOfMen" : numberOfMen[runTitle], "numberOfWomen" : numberOfWomen[runTitle] });
       });
+
   }
+  console.log("numberofmen****",numberOfMen);
+
   var timerFunction1 = setTimeout(function(){
     console.log("should be 1 seconds later writing file");
     fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
-    console.log("File written! - Check your output.json file");
+    fs.writeFileSync('public/counts.json', JSON.stringify(countsjson, null, 4));
+    console.log("File written! - Check your output.json and countsjson files");
   },1500);
 }, 1500);
 
 console.log("and this is after the subroutine before file send");
 var timerFunction2 = setTimeout(function(){
 res.sendfile('./public/results.html');
-}, 3900);
+}, 4000);
 
 });
 
