@@ -125,9 +125,10 @@ var timerFunction0 = setTimeout(function(){
           console.log('here the file is read and json assigned');
           console.log("");
          }
-              console.log("website:", website, "numberOfMen", numberOfMen[runTitle]);                 
-              console.log("numberOfWomen", numberOfWomen[runTitle]);
-              countsjson.push({ "runTitle" : runTitle, "numberOfMen" : numberOfMen[runTitle], "numberOfWomen" : numberOfWomen[runTitle] });
+              //console.log("website:", website, "numberOfMen", numberOfMen[runTitle]);                
+              //console.log("numberOfWomen", numberOfWomen[runTitle]);
+              //console.log("website", linksjson[website]);
+              countsjson.push({ "runTitle" : runTitle, "website" : linksjson[website], "numberOfMen" : numberOfMen[runTitle], "numberOfWomen" : numberOfWomen[runTitle] });
       });
 
   }
@@ -153,5 +154,3 @@ app.set('ip', process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1");
 app.listen(app.get('port') ,app.get('ip'), function () {
   console.log("✔ Express server listening at %s:%d ", app.get('ip'),app.get('port'));
 });
-
-

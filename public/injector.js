@@ -9,7 +9,9 @@ $( document ).ready(function() {
       $.getJSON("links.json", function (links) {
         console.log("got links", links[0].website)
         for (i = 0; i < links.length; i++) {
-          htmlIntro=htmlIntro + '<div class="intro-links"><a href="' + links[i].website + '">' + links[i].website + '</a>' + '<span id="more-info' + i + '"></span><p id="blah"></p></div><br>'
+          htmlIntro=htmlIntro + '<div class="intro-links"><a href="' + links[i].website + '">';
+          htmlIntro=htmlIntro + links[i].website.slice(links[i].website.indexOf('uk/')+3, links[i].website.indexOf('/results'));
+          htmlIntro=htmlIntro + '</a>' + '<span id="more-info' + i + '"></span><p id="blah"></p></div><br>'
           //<p class="nextinject">hello</p></span>'
         }
         $('#inject_here').append(htmlIntro);
@@ -28,7 +30,7 @@ $( document ).ready(function() {
       }
     });
     console.log("injecting men count");
-    document.getElementById("blah").innerHTML="stuff";
+    $("#blah").html('<p>morestuff</p>');
   },2000);
 
   var timerFunction2 = setTimeout(function(){
