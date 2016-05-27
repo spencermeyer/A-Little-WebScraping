@@ -4,13 +4,13 @@ $( document ).ready(function() {
   console.log("This is injector.js required in results html");
 
   var timerFunction1 = setTimeout(function(){
-      console.log("in first timer");
+      //console.log("in first timer");
       var htmlIntro = '<p> Today there were runners from: </p>';
       $.getJSON("links.json", function (links) {
-        console.log("got links", links[0].website)
+        //console.log("got links", links[0].website)
         for (i = 0; i < links.length; i++) {
           var runIdentifier = links[i].website.slice(links[i].website.indexOf('uk/')+3, links[i].website.indexOf('/results'));
-          console.log("runIdentifier", runIdentifier);
+          //console.log("runIdentifier", runIdentifier);
           htmlIntro=htmlIntro + '<div class="intro-links"><a href="' + links[i].website + '">';
           htmlIntro=htmlIntro + runIdentifier;
           htmlIntro=htmlIntro + '</a>' + '<span id="more-info' + i + '"></span></div><br>'
@@ -24,9 +24,9 @@ $( document ).ready(function() {
     var pbclass="nopb";
     var ageCatClass="normal-age";
     var agePosClass="normal-age";
-    console.log("should be 1.5 seconds after loading");
+    //console.log("should be 1.5 seconds after loading");
     $.getJSON("output.json", function (result) {
-      console.log('got some json?', result.length);
+      //console.log('got some json?', result.length);
       var htmltoappend = '<table id="results" class="table table-bordered table-hover">'
       htmltoappend = htmltoappend + '<thead>'
       htmltoappend = htmltoappend + '<tr class="row"><th>'+'Parkrun'+'</th><th>'+'Date'+'</th><th>' + "Result" + '</th><th>' + 'Parkrunner' + '</th>' + '<th>' + 'Time' + '</th>' + '<th>' + 'Agecat' + '</th>' + '<th>' + 'Agegrade' +'<th>' + 'AgeGradePos' + '</th>' + '<th id="gender">'+'Gender' + '</th>' +  '<th>' + 'GenderPos' + '</th>' + '<th>' + 'Note' + '</th>' + '<th>' + 'Total Runs' + '</th></tr>';
@@ -46,12 +46,12 @@ $( document ).ready(function() {
       htmltoappend = htmltoappend + '</tbody>' + '</table>';
       $('#inject_here').append(htmltoappend);
     });
-  console.log("Injected2 ?");
+  //console.log("Injected2 ?");
   },4000);
 
   var timerFunction3 = setTimeout(function(){
     var countsHTML = '<table class="table table-bordered table-hover"><th>Run Location</th><th>Number Of Men</th><th>Number of Women</th>'
-    console.log('countsHTML before loop', countsHTML);
+    //console.log('countsHTML before loop', countsHTML);
     $.getJSON("counts.json", function(links){
       //console.log("got the counts");
       for (i = 0; i < links.length; i++) {
@@ -64,7 +64,7 @@ $( document ).ready(function() {
     });
     var timerFunction4 = setTimeout(function(){
       countsHTML = countsHTML + '</table>';
-      console.log("injecting count table", countsHTML);
+      //console.log("injecting count table", countsHTML);
       $("#inject_here2").append(countsHTML);
     }, 1500);
   },1500);
