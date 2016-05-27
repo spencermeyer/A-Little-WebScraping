@@ -1,57 +1,36 @@
 [
     {
         "runTitle": "Southampton parkrun #\n\t\t\t184 -\n\t\t\t26/12/2015",
-        "website": {
-            "website": "http://www.parkrun.org.uk/leeonthesolent/results/weeklyresults/?runSeqNumber=28"
-        },
         "numberOfMen": 2,
         "numberOfWomen": 0
     },
     {
         "runTitle": "Eastleigh parkrun #\n\t\t\t288 -\n\t\t\t19/12/2015",
-        "website": {
-            "website": "http://www.parkrun.org.uk/leeonthesolent/results/weeklyresults/?runSeqNumber=28"
-        },
         "numberOfMen": 17,
         "numberOfWomen": 13
     },
     {
         "runTitle": "Netley Abbey parkrun #\n\t\t\t204 -\n\t\t\t26/12/2015",
-        "website": {
-            "website": "http://www.parkrun.org.uk/leeonthesolent/results/weeklyresults/?runSeqNumber=28"
-        },
         "numberOfMen": 3,
         "numberOfWomen": 0
     },
     {
         "runTitle": "Colby parkrun #\n\t\t\t82 -\n\t\t\t02/01/2016",
-        "website": {
-            "website": "http://www.parkrun.org.uk/leeonthesolent/results/weeklyresults/?runSeqNumber=28"
-        },
         "numberOfMen": 1,
         "numberOfWomen": 0
     },
     {
-        "runTitle": "Alice Holt parkrun #\n\t\t\t155 -\n\t\t\t02/01/2016",
-        "website": {
-            "website": "http://www.parkrun.org.uk/leeonthesolent/results/weeklyresults/?runSeqNumber=28"
-        },
+        "runTitle": "Lee-on-the-Solent parkrun #\n\t\t\t28 -\n\t\t\t02/01/2016",
         "numberOfMen": 0,
         "numberOfWomen": 1
     },
     {
-        "runTitle": "Lee-on-the-Solent parkrun #\n\t\t\t28 -\n\t\t\t02/01/2016",
-        "website": {
-            "website": "http://www.parkrun.org.uk/leeonthesolent/results/weeklyresults/?runSeqNumber=28"
-        },
+        "runTitle": "Alice Holt parkrun #\n\t\t\t155 -\n\t\t\t02/01/2016",
         "numberOfMen": 0,
         "numberOfWomen": 1
     },
     {
         "runTitle": "Big Bay parkrun #\n\t\t\t139 -\n\t\t\t02/01/2016",
-        "website": {
-            "website": "http://www.parkrun.org.uk/leeonthesolent/results/weeklyresults/?runSeqNumber=28"
-        },
         "numberOfMen": 1,
         "numberOfWomen": 0
     }

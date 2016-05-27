@@ -128,7 +128,7 @@ var timerFunction0 = setTimeout(function(){
               //console.log("website:", website, "numberOfMen", numberOfMen[runTitle]);                
               //console.log("numberOfWomen", numberOfWomen[runTitle]);
               //console.log("website", linksjson[website]);
-              countsjson.push({ "runTitle" : runTitle, "website" : linksjson[website], "numberOfMen" : numberOfMen[runTitle], "numberOfWomen" : numberOfWomen[runTitle] });
+              countsjson.push({ "runTitle" : runTitle, "numberOfMen" : numberOfMen[runTitle], "numberOfWomen" : numberOfWomen[runTitle] });
       });
 
   }

@@ -9,29 +9,16 @@ $( document ).ready(function() {
       $.getJSON("links.json", function (links) {
         console.log("got links", links[0].website)
         for (i = 0; i < links.length; i++) {
+          var runIdentifier = links[i].website.slice(links[i].website.indexOf('uk/')+3, links[i].website.indexOf('/results'));
+          console.log("runIdentifier", runIdentifier);
           htmlIntro=htmlIntro + '<div class="intro-links"><a href="' + links[i].website + '">';
-          htmlIntro=htmlIntro + links[i].website.slice(links[i].website.indexOf('uk/')+3, links[i].website.indexOf('/results'));
-          htmlIntro=htmlIntro + '</a>' + '<span id="more-info' + i + '"></span><p id="blah"></p></div><br>'
+          htmlIntro=htmlIntro + runIdentifier;
+          htmlIntro=htmlIntro + '</a>' + '<span id="more-info' + i + '">spanconnts</span></div><br>'
           //<p class="nextinject">hello</p></span>'
         }
         $('#inject_here').append(htmlIntro);
       });
   },1000);
-
-
-    // TO DO : make a id in the links header and append the counts.
-    //  .slice(a.indexOf('uk/')+3, a.indexOf('/results'));
-
-  var timerFunction3 = setTimeout(function(){
-    $.getJSON("counts.json", function(links){
-      console.log("got the counts");
-      for (i = 0; i < links.length; i++) {
-        console.log("from count", links[i].runTitle, links[i].numberOfMen, links[i].numberOfWomen );
-      }
-    });
-    console.log("injecting men count");
-    $("#blah").html('<p>morestuff</p>');
-  },2000);
 
   var timerFunction2 = setTimeout(function(){
     var pbclass="nopb";
@@ -61,4 +48,31 @@ $( document ).ready(function() {
     });
   console.log("Injected2 ?");
   },4000);
+
+  var timerFunction3 = setTimeout(function(){
+    var countsHTML = '<table><th>Run Location</th><th>Number Of Men</th><th>Number of Women</th>'
+    console.log('countsHTML before loop', countsHTML);
+    $.getJSON("counts.json", function(links){
+      console.log("got the counts");
+      for (i = 0; i < links.length; i++) {
+        var runTitleForInjection = links[i].runTitle.slice(links[i].runTitle.indexOf('count')+1, links[i].runTitle.indexOf('parkrun #'));
+        //console.log(runTitleForInjection);
+        //console.log("from count", runTitleForInjection, links[i].numberOfMen, links[i].numberOfWomen);
+        countsHTML = countsHTML + '<tr><td>' + runTitleForInjection + '</td><td>' + links[i].numberOfMen + '</td><td>' + links[i].numberOfWomen+'</td></tr>';
+        console.log("constructing individual count row", countsHTML);
+      }
+    });
+    var timerFunction4 = setTimeout(function(){
+      countsHTML = countsHTML + '</table>';
+      console.log("injecting count table", countsHTML);
+      $("#inject_here2").append(countsHTML);
+    }, 1500);
+  },1500);
+
+
+
+
+
+
+
 });
