@@ -13,7 +13,7 @@ $( document ).ready(function() {
           console.log("runIdentifier", runIdentifier);
           htmlIntro=htmlIntro + '<div class="intro-links"><a href="' + links[i].website + '">';
           htmlIntro=htmlIntro + runIdentifier;
-          htmlIntro=htmlIntro + '</a>' + '<span id="more-info' + i + '">spanconnts</span></div><br>'
+          htmlIntro=htmlIntro + '</a>' + '<span id="more-info' + i + '"></span></div><br>'
           //<p class="nextinject">hello</p></span>'
         }
         $('#inject_here').append(htmlIntro);
@@ -50,16 +50,16 @@ $( document ).ready(function() {
   },4000);
 
   var timerFunction3 = setTimeout(function(){
-    var countsHTML = '<table><th>Run Location</th><th>Number Of Men</th><th>Number of Women</th>'
+    var countsHTML = '<table class="table table-bordered table-hover"><th>Run Location</th><th>Number Of Men</th><th>Number of Women</th>'
     console.log('countsHTML before loop', countsHTML);
     $.getJSON("counts.json", function(links){
-      console.log("got the counts");
+      //console.log("got the counts");
       for (i = 0; i < links.length; i++) {
         var runTitleForInjection = links[i].runTitle.slice(links[i].runTitle.indexOf('count')+1, links[i].runTitle.indexOf('parkrun #'));
         //console.log(runTitleForInjection);
         //console.log("from count", runTitleForInjection, links[i].numberOfMen, links[i].numberOfWomen);
         countsHTML = countsHTML + '<tr><td>' + runTitleForInjection + '</td><td>' + links[i].numberOfMen + '</td><td>' + links[i].numberOfWomen+'</td></tr>';
-        console.log("constructing individual count row", countsHTML);
+        //console.log("constructing individual count row", countsHTML);
       }
     });
     var timerFunction4 = setTimeout(function(){

@@ -29,4 +29,6 @@ th #gender, td #gender{
 a {
  white-space: nowrap; 
 }
-
+.new {
+  color: red;
+}
