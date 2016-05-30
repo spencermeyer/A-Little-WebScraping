@@ -26,8 +26,8 @@ app.get('/results', function(req, res){
 // this route scrapes, makes a json and sends the results view
 app.get('/scrape', function(req, res){
   var options = {
-    url : 'http://localhost:8000/results_Consolidated_parkrun.html',
-    //url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
+    //url : 'http://localhost:8000/results_Consolidated_parkrun.html',
+    url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
     headers: {
       'User-Agent': 'request'
     }
@@ -78,7 +78,9 @@ var timerFunction0 = setTimeout(function(){
   var agecats=[];
   var countsjson=[];
   var numberOfEastleighMen=[];
+  var numberOfMen=[];
   var numberOfEastleighWomen=[];
+  var numberOfWomen=[];
   fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
   // console.log("json cleaned / created");
   // now go through all the websites where there are results:
@@ -104,6 +106,8 @@ var timerFunction0 = setTimeout(function(){
           agecats[runTitle]={}
           numberOfEastleighMen[runTitle]=0;
           numberOfEastleighWomen[runTitle]=0;
+          numberOfMen[runTitle]=0;
+          numberOfWomen[runTitle]=0;
           //numberOfEastleighWomen[runTitle]=0;
           //Here, pick out the data and assign json iterate each table row
           $('table.sortable tbody tr').each(function(i, element){ 
@@ -121,6 +125,8 @@ var timerFunction0 = setTimeout(function(){
               if(children.eq(5).text()==="M"){numberOfEastleighMen[runTitle]=numberOfEastleighMen[runTitle]+1};
               if(children.eq(5).text()==="F"){numberOfEastleighWomen[runTitle]=numberOfEastleighWomen[runTitle]+1};
             }   
+            if(children.eq(5).text()==="M"){numberOfMen[runTitle]=numberOfMen[runTitle]+1};
+            if(children.eq(5).text()==="F"){numberOfWomen[runTitle]=numberOfWomen[runTitle]+1};
           }); // end of each element in table sortable 
           console.log('here the file is read and json assigned');
           console.log("");
@@ -128,7 +134,7 @@ var timerFunction0 = setTimeout(function(){
               //console.log("website:", website, "numberOfEastleighMen", numberOfEastleighMen[runTitle]);                
               //console.log("numberOfEastleighWomen", numberOfEastleighWomen[runTitle]);
               //console.log("website", linksjson[website]);
-              countsjson.push({ "runTitle" : runTitle, "numberOfEastleighMen" : numberOfEastleighMen[runTitle], "numberOfEastleighWomen" : numberOfEastleighWomen[runTitle] });
+              countsjson.push({ "runTitle" : runTitle, "numberOfEastleighMen" : numberOfEastleighMen[runTitle], "numberOfEastleighWomen" : numberOfEastleighWomen[runTitle], "numberOfMen": numberOfMen[runTitle], "numberOfWomen": numberOfWomen[runTitle] });
       });
 
   }
