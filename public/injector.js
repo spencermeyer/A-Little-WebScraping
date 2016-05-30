@@ -49,7 +49,7 @@ $( document ).ready(function() {
   },4000);
 
   var timerFunction3 = setTimeout(function(){
-    var countsHTML = '<table class="table table-bordered table-hover"><th>Run Location</th><th>Number Of Eastleigh Men</th><th>Number of Eastleigh Women</th><th>Total Men</th><th>Total Women</th>'
+    var countsHTML = '<table class="table table-bordered table-hover"><th>Run Location</th><th>Number Of Eastleigh Men</th><th>Number of Eastleigh Women</th><th>Total Men</th><th>Total Women</th><th>Total</th>'
     //console.log('countsHTML before loop', countsHTML);
     $.getJSON("counts.json", function(links){
       //console.log("got the counts");
@@ -57,7 +57,7 @@ $( document ).ready(function() {
         var runTitleForInjection = links[i].runTitle.slice(links[i].runTitle.indexOf('count')+1, links[i].runTitle.indexOf('parkrun #'));
         //console.log(runTitleForInjection);
         //console.log("from count", runTitleForInjection, links[i].numberOfEastleighMen, links[i].numberOfEastleighWomen);
-        countsHTML = countsHTML + '<tr><td>' + runTitleForInjection + '</td><td>' + links[i].numberOfEastleighMen + '</td><td>' + links[i].numberOfEastleighWomen+'</td><td>'+links[i].numberOfMen + '</td><td>' + links[i].numberOfWomen +  '</td></tr>';
+        countsHTML = countsHTML + '<tr><td>' + runTitleForInjection + '</td><td>' + links[i].numberOfEastleighMen + '</td><td>' + links[i].numberOfEastleighWomen+'</td><td>'+links[i].numberOfMen + '</td><td>' + links[i].numberOfWomen +  '</td><td>'+ (parseInt(links[i].numberOfMen) + parseInt(links[i].numberOfWomen)) +'</td></tr>';
         //console.log("constructing individual count row", countsHTML);
       }
     });
