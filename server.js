@@ -26,8 +26,8 @@ app.get('/results', function(req, res){
 // this route scrapes, makes a json and sends the results view
 app.get('/scrape', function(req, res){
   var options = {
-    // url : 'http://localhost:8000/results_Consolidated_parkrun.html',
-    url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
+    url : 'http://localhost:8000/results_Consolidated_parkrun.html',
+    //url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
     headers: {
       'User-Agent': 'request'
     }
@@ -77,8 +77,8 @@ var timerFunction0 = setTimeout(function(){
   var json =[];
   var agecats=[];
   var countsjson=[];
-  var numberOfMen=[];
-  var numberOfWomen=[];
+  var numberOfEastleighMen=[];
+  var numberOfEastleighWomen=[];
   fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
   // console.log("json cleaned / created");
   // now go through all the websites where there are results:
@@ -102,9 +102,9 @@ var timerFunction0 = setTimeout(function(){
           // here pick out the title
           var runTitle=$('h2').text();
           agecats[runTitle]={}
-          numberOfMen[runTitle]=0;
-          numberOfWomen[runTitle]=0;
-          //numberOfWomen[runTitle]=0;
+          numberOfEastleighMen[runTitle]=0;
+          numberOfEastleighWomen[runTitle]=0;
+          //numberOfEastleighWomen[runTitle]=0;
           //Here, pick out the data and assign json iterate each table row
           $('table.sortable tbody tr').each(function(i, element){ 
             var children = $(this).children();
@@ -118,21 +118,21 @@ var timerFunction0 = setTimeout(function(){
             // console.log("indivdual runs ids agecat", agecat, agecats[runTitle][agecat]);
             if(children.eq(7).text() === "Eastleigh RC"){
               json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "AgeRank" : agecats[runTitle][agecat], "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});
-              if(children.eq(5).text()==="M"){numberOfMen[runTitle]=numberOfMen[runTitle]+1};
-              if(children.eq(5).text()==="F"){numberOfWomen[runTitle]=numberOfWomen[runTitle]+1};
+              if(children.eq(5).text()==="M"){numberOfEastleighMen[runTitle]=numberOfEastleighMen[runTitle]+1};
+              if(children.eq(5).text()==="F"){numberOfEastleighWomen[runTitle]=numberOfEastleighWomen[runTitle]+1};
             }   
           }); // end of each element in table sortable 
           console.log('here the file is read and json assigned');
           console.log("");
          }
-              //console.log("website:", website, "numberOfMen", numberOfMen[runTitle]);                
-              //console.log("numberOfWomen", numberOfWomen[runTitle]);
+              //console.log("website:", website, "numberOfEastleighMen", numberOfEastleighMen[runTitle]);                
+              //console.log("numberOfEastleighWomen", numberOfEastleighWomen[runTitle]);
               //console.log("website", linksjson[website]);
-              countsjson.push({ "runTitle" : runTitle, "numberOfMen" : numberOfMen[runTitle], "numberOfWomen" : numberOfWomen[runTitle] });
+              countsjson.push({ "runTitle" : runTitle, "numberOfEastleighMen" : numberOfEastleighMen[runTitle], "numberOfEastleighWomen" : numberOfEastleighWomen[runTitle] });
       });
 
   }
-  console.log("numberofmen****",numberOfMen);
+  console.log("numberOfEastleighMen****",numberOfEastleighMen);
 
   var timerFunction1 = setTimeout(function(){
     console.log("should be 1 seconds later writing file");

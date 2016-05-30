@@ -50,15 +50,15 @@ $( document ).ready(function() {
   },4000);
 
   var timerFunction3 = setTimeout(function(){
-    var countsHTML = '<table class="table table-bordered table-hover"><th>Run Location</th><th>Number Of Men</th><th>Number of Women</th>'
+    var countsHTML = '<table class="table table-bordered table-hover"><th>Run Location</th><th>Number Of Eastleigh Men</th><th>Number of Eastleigh Women</th>'
     //console.log('countsHTML before loop', countsHTML);
     $.getJSON("counts.json", function(links){
       //console.log("got the counts");
       for (i = 0; i < links.length; i++) {
         var runTitleForInjection = links[i].runTitle.slice(links[i].runTitle.indexOf('count')+1, links[i].runTitle.indexOf('parkrun #'));
         //console.log(runTitleForInjection);
-        //console.log("from count", runTitleForInjection, links[i].numberOfMen, links[i].numberOfWomen);
-        countsHTML = countsHTML + '<tr><td>' + runTitleForInjection + '</td><td>' + links[i].numberOfMen + '</td><td>' + links[i].numberOfWomen+'</td></tr>';
+        //console.log("from count", runTitleForInjection, links[i].numberOfEastleighMen, links[i].numberOfEastleighWomen);
+        countsHTML = countsHTML + '<tr><td>' + runTitleForInjection + '</td><td>' + links[i].numberOfEastleighMen + '</td><td>' + links[i].numberOfEastleighWomen+'</td></tr>';
         //console.log("constructing individual count row", countsHTML);
       }
     });
@@ -68,11 +68,6 @@ $( document ).ready(function() {
       $("#inject_here2").append(countsHTML);
     }, 1500);
   },1500);
-
-
-
-
-
 
 
 });
