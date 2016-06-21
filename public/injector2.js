@@ -26,13 +26,13 @@ $( document ).ready(function() {
     //console.log("should be 1.5 seconds after loading");
     $.getJSON("output.json", function (result) {
       //console.log('got some json?', result.length);
+      result.sort();   //************  SORT THIS SORT  !!!!
       var htmltoappend = '<table id="results" class="table table-bordered table-hover">'
       htmltoappend = htmltoappend + '<thead>'
       htmltoappend = htmltoappend + '<tr class="row"><th>'+'Parkrun'+'</th><th>'+'Date'+'</th><th>' + "Result" + '</th><th>' + 'Parkrunner' + '</th>' + '<th>' + 'Time' + '</th>' + '<th>' + 'Agecat' + '</th>' + '<th>' + 'Agegrade' +'<th>' + 'AgeGradePos' + '</th>' + '<th id="gender">'+'Gender' + '</th>' +  '<th>' + 'GenderPos' + '</th>' + '<th>' + 'Note' + '</th>' + '<th>' + 'Total Runs' + '</th></tr>';
       htmltoappend = htmltoappend + '</thead><tbody>'
 
       for (i = 0; i < result.length; i++) {
-
         if(result[i].AgeRank < 2){agePosClass="good-in-age"}else{agePosClass="normal-age"};
         if(parseFloat(result[i].agegrade) > 70){ ageCatClass="fast-age" }else{ageCatClass="normal-age"};
         if(result[i].Note =="New PB!"){pbclass="newpb"}else{pbclass="nopb"};
