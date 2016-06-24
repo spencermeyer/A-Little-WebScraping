@@ -26,7 +26,15 @@ $( document ).ready(function() {
     //console.log("should be 1.5 seconds after loading");
     $.getJSON("output.json", function (result) {
       //console.log('got some json?', result.length);
-      result.sort();   //************  SORT THIS SORT  !!!!
+      result.sort(
+        function(a,b){ 
+          if(a.parkrun < b.parkrun) 
+            return -1;
+          if(a.parkrun > b.parkrun) 
+            return  1;
+          return 0
+          }
+        );   //************  SORT THIS SORT  !!!!
       var htmltoappend = '<table id="results" class="table table-bordered table-hover">'
       htmltoappend = htmltoappend + '<thead>'
       htmltoappend = htmltoappend + '<tr class="row"><th>'+'Parkrun'+'</th><th>'+'Date'+'</th><th>' + "Result" + '</th><th>' + 'Parkrunner' + '</th>' + '<th>' + 'Time' + '</th>' + '<th>' + 'Agecat' + '</th>' + '<th>' + 'Agegrade' +'<th>' + 'AgeGradePos' + '</th>' + '<th id="gender">'+'Gender' + '</th>' +  '<th>' + 'GenderPos' + '</th>' + '<th>' + 'Note' + '</th>' + '<th>' + 'Total Runs' + '</th></tr>';
