@@ -30,8 +30,8 @@ app.get('/scrape2', function(req, res){
 // this route scrapes, makes a json and sends the results view
 app.get('/scrape', function(req, res){
   var options = {
-    //url : 'http://localhost:8000/results_Consolidated_parkrun.html',
-    url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
+    url : 'http://localhost:8000/results_Consolidated_parkrun.html',
+    //url : 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537',
     headers: {
       'User-Agent': 'request'
     }
@@ -112,6 +112,7 @@ var timerFunction0 = setTimeout(function(){
           numberOfEastleighWomen[runTitle]=0;
           numberOfMen[runTitle]=0;
           numberOfWomen[runTitle]=0;
+          top12s=[];
           //numberOfEastleighWomen[runTitle]=0;
           //Here, pick out the data and assign json iterate each table row
           $('table.sortable tbody tr').each(function(i, element){ 
@@ -124,6 +125,19 @@ var timerFunction0 = setTimeout(function(){
               agecats[runTitle][agecat]=1;
             }
             // console.log("indivdual runs ids agecat", agecat, agecats[runTitle][agecat]);
+            //  here work out top12
+            var x = children.eq(4).text() ? parseFloat(children.eq(4).text()) : null; 
+            console.log('here is x: ' , x);
+            if(top12s.length < 12 && x != null) { top12s.push(x) }           
+            if (x > top12s[0]){
+              top12s.push(x);
+              top12s.sort(function(a, b){return b-a});
+              if(top12s.length > 12){
+                top12s.pop();
+                console.log('popping')}
+            }
+            console.log('starting to sort agegrades', top12s, 'and length', top12s.length, '12thbyAge Age Grade is', top12s[top12s.length-1] );
+
             if(children.eq(7).text() === "Eastleigh RC"){
               json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "AgeRank" : agecats[runTitle][agecat], "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});
               if(children.eq(5).text()==="M"){numberOfEastleighMen[runTitle]=numberOfEastleighMen[runTitle]+1};
