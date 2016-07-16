@@ -81,10 +81,12 @@ var timerFunction0 = setTimeout(function(){
   var json =[];
   var agecats=[];
   var countsjson=[];
+  var top12sjson=[];
   var numberOfEastleighMen=[];
   var numberOfMen=[];
   var numberOfEastleighWomen=[];
   var numberOfWomen=[];
+  var top12s={};
   fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
   // console.log("json cleaned / created");
   // now go through all the websites where there are results:
@@ -103,7 +105,7 @@ var timerFunction0 = setTimeout(function(){
       request(options, function(error, response, html){
         if(error){console.log('There was an error', error)};
         if(!error){
-          console.log("no error, scraping, website id is ");
+          console.log("no error, scraping, website id is ", linksjson[website].website);
           var $ = cheerio.load(html);
           // here pick out the title
           var runTitle=$('h2').text();
@@ -112,7 +114,7 @@ var timerFunction0 = setTimeout(function(){
           numberOfEastleighWomen[runTitle]=0;
           numberOfMen[runTitle]=0;
           numberOfWomen[runTitle]=0;
-          top12s=[];
+          top12s.site=[];
           //numberOfEastleighWomen[runTitle]=0;
           //Here, pick out the data and assign json iterate each table row
           $('table.sortable tbody tr').each(function(i, element){ 
@@ -126,17 +128,17 @@ var timerFunction0 = setTimeout(function(){
             }
             // console.log("indivdual runs ids agecat", agecat, agecats[runTitle][agecat]);
             //  here work out top12
-            var x = children.eq(4).text() ? parseFloat(children.eq(4).text()) : null; 
-            console.log('here is x: ' , x);
-            if(top12s.length < 12 && x != null) { top12s.push(x) }           
-            if (x > top12s[0]){
-              top12s.push(x);
-              top12s.sort(function(a, b){return b-a});
-              if(top12s.length > 12){
-                top12s.pop();
-                console.log('popping')}
+            var x = children.eq(4).text() ? parseFloat(children.eq(4).text()) : null;
+            var site = $('#primary h2').text()
+            console.log('here is x: ' , x, 'and length', top12s.site.length);
+            if(top12s.site.length < 12 && x != null) { top12s.site.push(x) }  
+            if (x > top12s.site[0]){
+              top12s.site.push(x);
+              top12s.site.sort(function(a, b){return b-a});
+              if(top12s.site.length > 12){
+                top12s.site.pop();}
             }
-            console.log('starting to sort agegrades', top12s, 'and length', top12s.length, '12thbyAge Age Grade is', top12s[top12s.length-1] );
+            console.log('starting to sort agegrades', top12s.site, 'and length', top12s.site.length, '12thbyAge Age Grade is', top12s.site[top12s.site.length-1] );
 
             if(children.eq(7).text() === "Eastleigh RC"){
               json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "AgeRank" : agecats[runTitle][agecat], "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});
@@ -146,6 +148,7 @@ var timerFunction0 = setTimeout(function(){
             if(children.eq(5).text()==="M"){numberOfMen[runTitle]=numberOfMen[runTitle]+1};
             if(children.eq(5).text()==="F"){numberOfWomen[runTitle]=numberOfWomen[runTitle]+1};
           }); // end of each element in table sortable 
+          //  here try to put json into top12sjson with removing non top 12s ?
           console.log('here the file is read and json assigned');
           console.log("");
          }
