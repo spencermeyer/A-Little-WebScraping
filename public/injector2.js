@@ -1,7 +1,7 @@
 // Scraping runs!
 
 $( document ).ready(function() {
-  console.log("This is injector2.js required in results2 html");
+  //console.log("This is injector2.js required in results2 html");
 
   var timerFunction2 = setTimeout(function(){
     var pbclass="nopb";
@@ -97,17 +97,12 @@ $( document ).ready(function() {
   var timerFunction4 = setTimeout(function(){
     $.getJSON("top12thsAgeGradesForRunjson.json", function (result) {
       htmltoappend='<table id="results" class="table table-bordered table-hover">'
-      //console.log(result);
-      //console.log('length is', result.length);
       for (var k in result){
-        console.log('in loop');
-        console.log(k);
         htmltoappend = htmltoappend + '<tr class="row">' + '<td>' + k + '</td>';
         htmltoappend = htmltoappend+  '<td> + ' + result[k] + '</td></tr>';
       }
       htmltoappend=htmltoappend+'</table>';
       $('#inject_here4').append(htmltoappend);
     });
-
   }, 4000);
 });
