@@ -85,7 +85,7 @@ var timerFunction0 = setTimeout(function(){
   var numberOfEastleighWomen=[];
   var numberOfWomen=[];
   var top12s={};
-  var nottop12s;
+  var nottop12s=[];
   fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
   // console.log("json cleaned / created");
   // now go through all the websites where there are results:
@@ -160,18 +160,15 @@ var timerFunction0 = setTimeout(function(){
     fs.writeFileSync('public/counts.json', JSON.stringify(countsjson, null, 4));
     jsontop12s=json;
     // now lets clear the under top12s out of the json!
-    // console.log(' ****  before clearing top12s ****', top12s);
     for (var i=0; i<jsontop12s.length; i+=1) {
-      //console.log(i, jsontop12s[i].parkrun, jsontop12s[i].agegrade);
-      //console.log('comparison', jsontop12s[i].parkrun, 'VS?', top12s[jsontop12s[i].parkrun] );
       if (parseFloat(jsontop12s[i].agegrade) < parseFloat(top12s[jsontop12s[i].parkrun][top12s[jsontop12s[i].parkrun].length-1])) {
         console.log('i want to pop', parseFloat(jsontop12s[i].agegrade), 'because < ', parseFloat(top12s[jsontop12s[i].parkrun][top12s[jsontop12s[i].parkrun].length-1], 'from', jsontop12s[i].parkrun ));
         console.log( jsontop12s.splice(i,1));
-        //nottop12s.push(jsontop12s.splice(i,1));
+        nottop12s.push(jsontop12s.splice(i,1));
       }
     }
     fs.writeFileSync('public/top12s.json', JSON.stringify(jsontop12s, null, 4));
-    //fs.writeFileSync('public/nottop12s.json', JSON.stringify(notjsontop12s, null, 4));
+    fs.writeFileSync('public/nottop12s.json', JSON.stringify(nottop12s, null, 4));
     console.log("File written! - Check your output.json and countsjson files");
   },3500);
 }, 1500);
