@@ -86,6 +86,7 @@ var timerFunction0 = setTimeout(function(){
   var numberOfWomen=[];
   var top12s={};
   var nottop12s=[];
+  var top12thsAgeGradesForRunjson;
   fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
   // console.log("json cleaned / created");
   // now go through all the websites where there are results:
@@ -164,11 +165,12 @@ var timerFunction0 = setTimeout(function(){
       if (parseFloat(jsontop12s[i].agegrade) < parseFloat(top12s[jsontop12s[i].parkrun][top12s[jsontop12s[i].parkrun].length-1])) {
         console.log('i want to pop', parseFloat(jsontop12s[i].agegrade), 'because < ', parseFloat(top12s[jsontop12s[i].parkrun][top12s[jsontop12s[i].parkrun].length-1], 'from', jsontop12s[i].parkrun ));
         console.log( jsontop12s.splice(i,1));
-        nottop12s.push(jsontop12s.splice(i,1));
+        nottop12s.push(jsontop12s.splice(i,1)[0]);
       }
     }
     fs.writeFileSync('public/top12s.json', JSON.stringify(jsontop12s, null, 4));
     fs.writeFileSync('public/nottop12s.json', JSON.stringify(nottop12s, null, 4));
+    fs.writeFileSync('public/top12thsAgeGradesForRunjson.json', JSON.stringify(top12s, null, 4));
     console.log("File written! - Check your output.json and countsjson files");
   },3500);
 }, 1500);
