@@ -45,10 +45,8 @@ app.get('/scrape', function(req, res){
   var minutes = time.getMinutes();
   var seconds = time.getSeconds();
   var timeDate= "Time "+  year + "-" + month+"-"+date1+" "+hour+":"+minutes+":"+seconds;
-  //console.log(timeDate);
   analsjson.push({"TimeAndDate": timeDate, "UserAgent": req.headers['user-agent'], "UserIP":req.headers['x-forwarded-for'] })
   fs.appendFile('public/analytics.json', JSON.stringify(analsjson, null, 4), function (err) {
-    console.log("analtics written");
   });
 
   var linksjson =[];
@@ -56,7 +54,7 @@ app.get('/scrape', function(req, res){
   request(options, function(error, response, html){
     if(error){console.log('There was an error', error)};
     if(!error){console.log('not an error!')}
-      console.log("something from the request to consolidated");
+      //console.log("something from the request to consolidated");
     var $ = cheerio.load(html);
     console.log('loaded webpage consolodated no errors');
     $('.floatleft a').not('.sortable').each(function(i, element){
@@ -87,6 +85,7 @@ var timerFunction0 = setTimeout(function(){
   var numberOfEastleighWomen=[];
   var numberOfWomen=[];
   var top12s={};
+  var nottop12s;
   fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
   // console.log("json cleaned / created");
   // now go through all the websites where there are results:
@@ -114,7 +113,8 @@ var timerFunction0 = setTimeout(function(){
           numberOfEastleighWomen[runTitle]=0;
           numberOfMen[runTitle]=0;
           numberOfWomen[runTitle]=0;
-          top12s.site=[];
+          var site = $('#primary h2').text()
+          top12s[site]=[];
           //numberOfEastleighWomen[runTitle]=0;
           //Here, pick out the data and assign json iterate each table row
           $('table.sortable tbody tr').each(function(i, element){ 
@@ -129,16 +129,16 @@ var timerFunction0 = setTimeout(function(){
             // console.log("indivdual runs ids agecat", agecat, agecats[runTitle][agecat]);
             //  here work out top12
             var x = children.eq(4).text() ? parseFloat(children.eq(4).text()) : null;
-            var site = $('#primary h2').text()
-            console.log('here is x: ' , x, 'and length', top12s.site.length);
-            if(top12s.site.length < 12 && x != null) { top12s.site.push(x) }  
-            if (x > top12s.site[0]){
-              top12s.site.push(x);
-              top12s.site.sort(function(a, b){return b-a});
-              if(top12s.site.length > 12){
-                top12s.site.pop();}
+            //console.log('here is x: ' , x, 'and length', top12s.site.length);
+            if(top12s[site].length < 12 && x != null) { top12s[site].push(x) }  
+            if (x > top12s[site][0]){
+              top12s[site].push(x);
+              top12s[site].sort(function(a, b){return b-a});
+              if(top12s[site].length > 12){
+                top12s[site].pop();}
             }
-            console.log('starting to sort agegrades', top12s.site, 'and length', top12s.site.length, '12thbyAge Age Grade is', top12s.site[top12s.site.length-1] );
+            //console.log('starting to sort agegrades', top12s[site], 'and length', top12s[site].length, '12thbyAge Age Grade is', top12s[site][top12s[site].length-1] );
+            // console.log('top12s', top12s)
 
             if(children.eq(7).text() === "Eastleigh RC"){
               json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "AgeRank" : agecats[runTitle][agecat], "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});
@@ -147,24 +147,31 @@ var timerFunction0 = setTimeout(function(){
             }   
             if(children.eq(5).text()==="M"){numberOfMen[runTitle]=numberOfMen[runTitle]+1};
             if(children.eq(5).text()==="F"){numberOfWomen[runTitle]=numberOfWomen[runTitle]+1};
-          }); // end of each element in table sortable 
+          }); // end of each element in table sortable
           //  here try to put json into top12sjson with removing non top 12s ?
-          console.log('here the file is read and json assigned');
-          console.log("");
          }
-              //console.log("website:", website, "numberOfEastleighMen", numberOfEastleighMen[runTitle]);                
-              //console.log("numberOfEastleighWomen", numberOfEastleighWomen[runTitle]);
-              //console.log("website", linksjson[website]);
-              countsjson.push({ "runTitle" : runTitle, "numberOfEastleighMen" : numberOfEastleighMen[runTitle], "numberOfEastleighWomen" : numberOfEastleighWomen[runTitle], "numberOfMen": numberOfMen[runTitle], "numberOfWomen": numberOfWomen[runTitle] });
+         countsjson.push({ "runTitle" : runTitle, "numberOfEastleighMen" : numberOfEastleighMen[runTitle], "numberOfEastleighWomen" : numberOfEastleighWomen[runTitle], "numberOfMen": numberOfMen[runTitle], "numberOfWomen": numberOfWomen[runTitle] });
       });
-
   }
-  console.log("numberOfEastleighMen****",numberOfEastleighMen);
 
   var timerFunction1 = setTimeout(function(){
     console.log("should be 1 seconds later writing file");
     fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
     fs.writeFileSync('public/counts.json', JSON.stringify(countsjson, null, 4));
+    jsontop12s=json;
+    // now lets clear the under top12s out of the json!
+    // console.log(' ****  before clearing top12s ****', top12s);
+    for (var i=0; i<jsontop12s.length; i+=1) {
+      //console.log(i, jsontop12s[i].parkrun, jsontop12s[i].agegrade);
+      //console.log('comparison', jsontop12s[i].parkrun, 'VS?', top12s[jsontop12s[i].parkrun] );
+      if (parseFloat(jsontop12s[i].agegrade) < parseFloat(top12s[jsontop12s[i].parkrun][top12s[jsontop12s[i].parkrun].length-1])) {
+        console.log('i want to pop', parseFloat(jsontop12s[i].agegrade), 'because < ', parseFloat(top12s[jsontop12s[i].parkrun][top12s[jsontop12s[i].parkrun].length-1], 'from', jsontop12s[i].parkrun ));
+        console.log( jsontop12s.splice(i,1));
+        //nottop12s.push(jsontop12s.splice(i,1));
+      }
+    }
+    fs.writeFileSync('public/top12s.json', JSON.stringify(jsontop12s, null, 4));
+    //fs.writeFileSync('public/nottop12s.json', JSON.stringify(notjsontop12s, null, 4));
     console.log("File written! - Check your output.json and countsjson files");
   },3500);
 }, 1500);
