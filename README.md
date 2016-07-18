@@ -24,5 +24,7 @@ Don't use nodemon server.js   because the json file changes in the middle of the
 To Do:
   1) get the node ignore file working so that I can use nodemon.
   2) Add lots more styling !
+  3) Recent additions are temporary, particularly in the injector2.js file - which would benefit from moving the repeated code into funcitons - if it to be kept.
+  
 
 
