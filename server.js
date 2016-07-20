@@ -66,7 +66,7 @@ app.get('/scrape', function(req, res){
     });
     // now the linksjson has the links to each parkrun, write the file
     fs.writeFile('public/links.json', JSON.stringify(linksjson, null, 4), function(err){
-      //console.log('File links.json successfully written! - Check your project directory for the links.json file');
+      console.log('File links.json successfully written! - Check your project directory for the links.json file' );
     });
   });  // end of the request routine
 
@@ -149,30 +149,31 @@ var timerFunction0 = setTimeout(function(){
             if(children.eq(5).text()==="M"){numberOfMen[runTitle]=numberOfMen[runTitle]+1};
             if(children.eq(5).text()==="F"){numberOfWomen[runTitle]=numberOfWomen[runTitle]+1};
           }); // end of each element in table sortable
-          //  here try to put json into top12sjson with removing non top 12s ?
+
          }
          countsjson.push({ "runTitle" : runTitle, "numberOfEastleighMen" : numberOfEastleighMen[runTitle], "numberOfEastleighWomen" : numberOfEastleighWomen[runTitle], "numberOfMen": numberOfMen[runTitle], "numberOfWomen": numberOfWomen[runTitle] });
       });
-  }
+      console.log('thats that website scraped?');
+  };
 
   var timerFunction1 = setTimeout(function(){
-    console.log("should be 1 seconds later writing file");
     fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
     fs.writeFileSync('public/counts.json', JSON.stringify(countsjson, null, 4));
     jsontop12s=json;
     // now lets clear the under top12s out of the json!
     for (var i=0; i<jsontop12s.length; i+=1) {
       if (parseFloat(jsontop12s[i].agegrade) < parseFloat(top12s[jsontop12s[i].parkrun][top12s[jsontop12s[i].parkrun].length-1])) {
-        console.log('i want to pop', parseFloat(jsontop12s[i].agegrade), 'because < ', parseFloat(top12s[jsontop12s[i].parkrun][top12s[jsontop12s[i].parkrun].length-1], 'from', jsontop12s[i].parkrun ));
-        console.log( jsontop12s.splice(i,1));
+        //console.log('i want to pop', parseFloat(jsontop12s[i].agegrade), 'because < ', parseFloat(top12s[jsontop12s[i].parkrun][top12s[jsontop12s[i].parkrun].length-1], 'from', jsontop12s[i].parkrun ));
+        //console.log( jsontop12s.splice(i,1));
         nottop12s.push(jsontop12s.splice(i,1)[0]);
       }
     }
+    console.log('****** WRITING FILES ******');
     fs.writeFileSync('public/top12s.json', JSON.stringify(jsontop12s, null, 4));
     fs.writeFileSync('public/nottop12s.json', JSON.stringify(nottop12s, null, 4));
     fs.writeFileSync('public/top12thsAgeGradesForRunjson.json', JSON.stringify(top12s, null, 4));
     console.log("File written! - Check your output.json and countsjson files");
-  },3500);
+  },4000);
 }, 1500);
 
 console.log("and this is after the subroutine before file send");
