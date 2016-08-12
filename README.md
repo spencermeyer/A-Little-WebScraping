@@ -21,6 +21,9 @@ to run type:  node server.js
 
 Don't use nodemon server.js   because the json file changes in the middle of the routine and it thinks it is a file change and re-starts.
 
+For development purposes, I don''t actually scrape the websites, I have a local copy, and serve the files with:
+python -m SimpleHTTPServer 8000
+
 To Do:
   1) get the node ignore file working so that I can use nodemon.
   2) Add lots more styling !
