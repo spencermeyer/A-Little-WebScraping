@@ -98,7 +98,6 @@ var timerFunction0 = setTimeout(function(){
         'User-Agent': 'request'
       }
   };
-  // console.log('after set options');
   // Here, iterate through each link and extract the data from each website
   for(website in linksjson)
   { 
@@ -118,12 +117,11 @@ var timerFunction0 = setTimeout(function(){
           numberOfWomen[runTitle]=0;
           var site = $('#primary h2').text()
           top12s[site]=[];
-          //numberOfEastleighWomen[runTitle]=0;
           //Here, pick out the data and assign json iterate each table row
           $('table.sortable tbody tr').each(function(i, element){ 
             var children = $(this).children();
             //  here work out the age gradings.
-            agecat=children.eq(3).text();
+            agecat=children.eq(3).text(); //pluck the agecat %
             if(agecat in agecats[runTitle]){
               agecats[runTitle][agecat]=agecats[runTitle][agecat]+1;
             }else{
