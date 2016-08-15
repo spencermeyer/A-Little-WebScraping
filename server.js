@@ -80,6 +80,7 @@ var timerFunction0 = setTimeout(function(){
   // First clean the output.json
   var json =[];
   var agecats=[];
+  var agecatsall=[];
   var countsjson=[];
   var top12sjson=[];
   var numberOfEastleighMen=[];
@@ -110,7 +111,8 @@ var timerFunction0 = setTimeout(function(){
           var $ = cheerio.load(html);
           // here pick out the title
           var runTitle=$('h2').text();
-          agecats[runTitle]={}
+          agecats[runTitle]={};
+          agecatsall[runtitle]={};
           numberOfEastleighMen[runTitle]=0;
           numberOfEastleighWomen[runTitle]=0;
           numberOfMen[runTitle]=0;
@@ -127,6 +129,7 @@ var timerFunction0 = setTimeout(function(){
             }else{
               agecats[runTitle][agecat]=1;
             }
+  
             // console.log("indivdual runs ids agecat", agecat, agecats[runTitle][agecat]);
             //  here work out top12
             var x = children.eq(4).text() ? parseFloat(children.eq(4).text()) : null;
@@ -141,6 +144,8 @@ var timerFunction0 = setTimeout(function(){
             //console.log('starting to sort agegrades', top12s[site], 'and length', top12s[site].length, '12thbyAge Age Grade is', top12s[site][top12s[site].length-1] );
             // console.log('top12s', top12s)
 
+            // IDEA  - SUCK IN ALL THE DATA.
+
             if(children.eq(7).text() === "Eastleigh RC"){
               json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "AgeRank" : agecats[runTitle][agecat], "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});
               if(children.eq(5).text()==="M"){numberOfEastleighMen[runTitle]=numberOfEastleighMen[runTitle]+1};
@@ -149,7 +154,8 @@ var timerFunction0 = setTimeout(function(){
             if(children.eq(5).text()==="M"){numberOfMen[runTitle]=numberOfMen[runTitle]+1};
             if(children.eq(5).text()==="F"){numberOfWomen[runTitle]=numberOfWomen[runTitle]+1};
           }); // end of each element in table sortable
-
+         // IDEA , HERE SORT JSON INTO AGE GRADE, ASSIGN POSITIONS, THEN CUT OUT NON EASTLEIGH.
+            
          }
          countsjson.push({ "runTitle" : runTitle, "numberOfEastleighMen" : numberOfEastleighMen[runTitle], "numberOfEastleighWomen" : numberOfEastleighWomen[runTitle], "numberOfMen": numberOfMen[runTitle], "numberOfWomen": numberOfWomen[runTitle] });
       });
