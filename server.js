@@ -29,8 +29,9 @@ app.get('/scrape2', function(req, res){
 
 // this route scrapes, makes a json and sends the results view
 app.get('/scrape', function(req, res){
-  var urlforscrape 
-  if (process.env.OPENSHIFT_NODEJS_PORT == 8080) {urlforscrape = 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537'}else{urlforscrape =  'http://localhost:8000/results_Consolidated_parkrun.html' }
+  // var urlforscrape if (process.env.OPENSHIFT_NODEJS_PORT == 8080) { didn't work
+  urlforscrape = 'http://www.parkrun.com/results/consolidatedclub/?clubNum=1537';
+  // urlforscrape =  'http://localhost:8000/results_Consolidated_parkrun.html' }
     console.info("url is ", urlforscrape);
   var options = { 
     url : urlforscrape,
