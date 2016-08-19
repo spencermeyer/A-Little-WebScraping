@@ -16,6 +16,7 @@ $( document ).ready(function() {
           htmlIntro=htmlIntro + '</a>' + '<span id="more-info' + i + '"></span></div>'
         }
         $('#inject_here').append(htmlIntro);
+        $('#spinner').css("display", "none");
       });
   },1000);
 

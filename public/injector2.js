@@ -43,6 +43,7 @@ $( document ).ready(function() {
         }
       }
       htmltoappend = htmltoappend + '</tbody>' + '</table>';
+      $('#spinner').css("display", "none");
       $('#inject_here').append(htmltoappend);
     });
   //console.log("Injected2 ?");
