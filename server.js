@@ -16,6 +16,7 @@ app.use(cheerio);                                 // this is the webscraper
 // configure routes
 app.get('/', function(req, res){
   console.log("home route");
+  doAnalytics("Home", req);
   res.sendfile('./public/index.html');
 });
 
@@ -24,6 +25,7 @@ app.get('/results', function(req, res){
 });
 
 app.get('/scrape2', function(req, res){
+  doAnalytics("scrape2", req);
   res.sendfile('./public/results2.html');
 });
 
@@ -36,22 +38,9 @@ app.get('/scrape', function(req, res){
     console.info("url is ", urlforscrape);
   var options = { 
     url : urlforscrape,
-    headers: {
-      'User-Agent': 'request'
-    }
+    headers: { 'User-Agent': 'request' }
   };
-  analsjson=[];
-  var time = new Date();
-  var year = time.getFullYear();
-  var month = time.getMonth()+1;
-  var date1 = time.getDate();
-  var hour = time.getHours();
-  var minutes = time.getMinutes();
-  var seconds = time.getSeconds();
-  var timeDate= "Time "+  year + "-" + month+"-"+date1+" "+hour+":"+minutes+":"+seconds;
-  analsjson.push({"TimeAndDate": timeDate, "UserAgent": req.headers['user-agent'], "UserIP":req.headers['x-forwarded-for'] })
-  fs.appendFile('public/analytics.json', JSON.stringify(analsjson, null, 4), function (err) {
-  });
+  doAnalytics("scrape", req);
 
   var linksjson =[];
   // Stage One: Get all the relevant Links:
@@ -80,18 +69,10 @@ var timerFunction0 = setTimeout(function(){
   // Let's scrape
   // console.log("from individual scrapes");
   // First clean the output.json
-  var json =[];
-  var agecats=[];
-  var agecatsall=[];
-  var countsjson=[];
-  var top12sjson=[];
-  var numberOfEastleighMen=[];
-  var numberOfMen=[];
-  var numberOfEastleighWomen=[];
-  var numberOfWomen=[];
-  var top12s={};
-  var nottop12s=[];
-  var top12thsAgeGradesForRunjson;
+  var json =[], agecats=[], agecatsall=[], countsjson=[]; top12sjson=[];
+  var numberOfEastleighMen=[], numberOfMen=[];
+  var numberOfEastleighWomen=[], numberOfWomen=[];
+  var top12s={}, nottop12s=[], top12thsAgeGradesForRunjson;
   fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
   // console.log("json cleaned / created");
   // now go through all the websites where there are results:
@@ -142,8 +123,6 @@ var timerFunction0 = setTimeout(function(){
               if(top12s[site].length > 12){
                 top12s[site].pop();}
             }
-            //console.log('starting to sort agegrades', top12s[site], 'and length', top12s[site].length, '12thbyAge Age Grade is', top12s[site][top12s[site].length-1] );
-            // console.log('top12s', top12s)
 
             // IDEA  - SUCK IN ALL THE DATA.
 
@@ -187,8 +166,23 @@ console.log("and this is after the subroutine before file send");
 var timerFunction2 = setTimeout(function(){
 res.sendfile('./public/results.html');
 }, 4000);
-
 });
+
+function doAnalytics(page, req){
+  console.log('doing analytics for:', page);
+  analsjson=[];
+  var time = new Date();
+  var year = time.getFullYear();
+  var month = time.getMonth()+1;
+  var date1 = time.getDate();
+  var hour = time.getHours();
+  var minutes = time.getMinutes();
+  var seconds = time.getSeconds();
+  var timeDate= "Time "+  year + "-" + month+"-"+date1+" "+hour+":"+minutes+":"+seconds;
+  analsjson.push({"TimeAndDate": timeDate, "Page": page, "UserAgent": req.headers['user-agent'], "UserIP":req.headers['x-forwarded-for'] })
+  fs.appendFile('public/analytics.json', JSON.stringify(analsjson, null, 4), function (err) {
+  });
+}
 
 app.set('port', process.env.OPENSHIFT_NODEJS_PORT || process.env.PORT || 5000);
 app.set('ip', process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1");

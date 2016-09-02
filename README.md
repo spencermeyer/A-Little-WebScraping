@@ -1,6 +1,6 @@
 This is my WebScraping example.
 
-It is based on a Node.js framework.
+It is based on a Node.js framework, uses Express as a router.
 
 I'm using Cheerio.js and Request.js to get tabulated data from an external website and save it as JSON.
 
