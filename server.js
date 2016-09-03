@@ -7,11 +7,13 @@ var request  = require('request');  // http get
 var app      = express();           // create our app w/ express
 var morgan   = require('morgan');   // log requests to the console (express4)
 var cheerio  = require('cheerio');  // scrapes the request
+var helmet   = require('helmet');   // does security stuff
 
 // configuration of controller
 app.use(express.static(__dirname + '/public'));   // set the static files location /public/img will be /img for users
 app.use(morgan('dev'));                           // log every request to the console
 app.use(cheerio);                                 // this is the webscraper
+app.use(helmet());                                // security type stuff
 
 // configure routes
 app.get('/', function(req, res){
