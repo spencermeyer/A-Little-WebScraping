@@ -128,8 +128,9 @@ var timerFunction0 = setTimeout(function(){
 
             // IDEA  - SUCK IN ALL THE DATA.
 
+            
+            json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "AgeRank" : agecats[runTitle][agecat], "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});
             if(children.eq(7).text() === "Eastleigh RC"){
-              json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "AgeRank" : agecats[runTitle][agecat], "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});
               if(children.eq(5).text()==="M"){numberOfEastleighMen[runTitle]=numberOfEastleighMen[runTitle]+1};
               if(children.eq(5).text()==="F"){numberOfEastleighWomen[runTitle]=numberOfEastleighWomen[runTitle]+1};
             }   
@@ -137,14 +138,18 @@ var timerFunction0 = setTimeout(function(){
             if(children.eq(5).text()==="F"){numberOfWomen[runTitle]=numberOfWomen[runTitle]+1};
           }); // end of each element in table sortable
          // IDEA , HERE SORT JSON INTO AGE GRADE, ASSIGN POSITIONS, THEN CUT OUT NON EASTLEIGH.
-            
          }
          countsjson.push({ "runTitle" : runTitle, "numberOfEastleighMen" : numberOfEastleighMen[runTitle], "numberOfEastleighWomen" : numberOfEastleighWomen[runTitle], "numberOfMen": numberOfMen[runTitle], "numberOfWomen": numberOfWomen[runTitle] });
       });
       console.log('thats that website scraped?');
   };
-
+  
   var timerFunction1 = setTimeout(function(){
+    json.sort(function(a,b) { 
+      var n= a.parkrun - b.parkrun;
+      if(n!==0) { return n}
+      return a.agegrade - b.agegrade;
+    });  //ok working but blank age grades are ranking high !!!
     fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
     fs.writeFileSync('public/counts.json', JSON.stringify(countsjson, null, 4));
     jsontop12s=json;
