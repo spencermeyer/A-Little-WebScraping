@@ -88,7 +88,7 @@ var timerFunction0 = setTimeout(function(){
   for(website in linksjson)
   { 
     options.url = linksjson[website].website;
-      // console.log("indiv scrapes, here is the website"); /// here website is 0,1,2,3 .....
+      //console.log("indiv scrapes, here is the website"); /// here website is 0,1,2,3 .....
       request(options, function(error, response, html){
         if(error){console.log('There was an error', error)};
         if(!error){
@@ -131,11 +131,11 @@ var timerFunction0 = setTimeout(function(){
             
             json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(), "AgeRank" : agecats[runTitle][agecat], "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});
             if(children.eq(7).text() === "Eastleigh RC"){
-              if(children.eq(5).text()==="M"){numberOfEastleighMen[runTitle]=numberOfEastleighMen[runTitle]+1};
-              if(children.eq(5).text()==="F"){numberOfEastleighWomen[runTitle]=numberOfEastleighWomen[runTitle]+1};
+              if(children.eq(5).text()==="M"){numberOfEastleighMen[runTitle]+=1};
+              if(children.eq(5).text()==="F"){numberOfEastleighWomen[runTitle]+=1};
             }   
-            if(children.eq(5).text()==="M"){numberOfMen[runTitle]=numberOfMen[runTitle]+1};
-            if(children.eq(5).text()==="F"){numberOfWomen[runTitle]=numberOfWomen[runTitle]+1};
+            if(children.eq(5).text()==="M"){numberOfMen[runTitle]+=1};
+            if(children.eq(5).text()==="F"){numberOfWomen[runTitle]+=1};
           }); // end of each element in table sortable
          // IDEA , HERE SORT JSON INTO AGE GRADE, ASSIGN POSITIONS, THEN CUT OUT NON EASTLEIGH.
          }
@@ -146,9 +146,10 @@ var timerFunction0 = setTimeout(function(){
   
   var timerFunction1 = setTimeout(function(){
     json.sort(function(a,b) { 
-      var n= a.parkrun - b.parkrun;
-      if(n!==0) { return n}
-      return a.agegrade - b.agegrade;
+      if(a.agegrade == '') { return +1 };
+      if(a.parkrun !== b.parkrun) { if(a.parkrun < b.parkrun) {return -1} else if(a.parkrun > b.parkrun) {return +1} };
+      console.log('sorting', parseFloat(b.agegrade), parseFloat(a.agegrade)); // blah
+      if (parseInt(b.agegrade) > parseInt(a.agegrade)) { return  1} else { return -1};
     });  //ok working but blank age grades are ranking high !!!
     fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
     fs.writeFileSync('public/counts.json', JSON.stringify(countsjson, null, 4));
