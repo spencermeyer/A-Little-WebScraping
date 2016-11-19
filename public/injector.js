@@ -47,7 +47,7 @@ $( document ).ready(function() {
       $('#inject_here').append(htmltoappend);
     });
   //console.log("Injected2 ?");
-  },4000);
+  },6600);
 
   var timerFunction3 = setTimeout(function(){
     var countsHTML = '<table class="table table-bordered table-hover"><th>Run Location</th><th>Number Of Eastleigh Men</th><th>Number of Eastleigh Women</th><th>Total Men</th><th>Total Women</th><th>Total</th>'

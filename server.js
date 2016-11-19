@@ -81,15 +81,13 @@ var timerFunction0 = setTimeout(function(){
   for(website in linksjson)
     { 
     options.url = linksjson[website].website;
-      //console.log("indiv scrapes, here is the website"); /// here website is 0,1,2,3 .....
+      console.log("Start scraping website:", options.url.slice( options.url.indexOf('uk/')+3, options.url.indexOf('/results')) );
+       /// here website is 0,1,2,3 .....
       request(options, function(error, response, html){
         if(error){console.log('There was an error', error)};
         if(!error){
-          console.log("no error, scraping, website id is ", linksjson[website].website.slice(linksjson[website].website.indexOf('uk/')+3, linksjson[website].website.indexOf('/results'))   );
           var $ = cheerio.load(html);
-          // here pick out the title
           var runTitle=$('h2').text();
-          // agecats[runTitle]={};
           numberOfEastleighMen[runTitle]=0;
           numberOfEastleighWomen[runTitle]=0;
           numberOfMen[runTitle]=0;
@@ -98,18 +96,7 @@ var timerFunction0 = setTimeout(function(){
           //Here, pick out the data and assign json iterate each table row
           $('table.sortable tbody tr').each(function(i, element){ 
             var children = $(this).children();
-            //  here work out the age gradings.
-            // agecat=children.eq(3).text(); //pluck the agecat %
-            // if(agecat in agecats[runTitle]){
-            //   agecats[runTitle][agecat]=agecats[runTitle][agecat]+1;
-            // }else{
-            //   agecats[runTitle][agecat]=1;
-            // }
-
-            //var x = children.eq(4).text() ? parseFloat(children.eq(4).text()) : null;
-
             json.push({ "parkrun" : $('#primary h2').text(), "pos" : children.eq(0).text(), "parkrunner" :  children.eq(1).text(), "time": children.eq(2).text(), "agecat" : children.eq(3).text(), "agegrade" : children.eq(4).text(),  "gender" : children.eq(5).text(), "genderpos" : children.eq(6).text(), "club" : children.eq(7).text(), "Note" : children.eq(8).text(), "TotalRuns" : children.eq(9).text()});
-            // have cut out this:  "AgeRank" : agecats[runTitle][agecat],
             if(children.eq(7).text() === "Eastleigh RC"){
               if(children.eq(5).text()==="M"){numberOfEastleighMen[runTitle]+=1};
               if(children.eq(5).text()==="F"){numberOfEastleighWomen[runTitle]+=1};
@@ -124,62 +111,74 @@ var timerFunction0 = setTimeout(function(){
       });
   };
   
-  // START OF VERY CLEVER IDEA
-  
-  sortAndWrite();
-
-  function sortAndWrite(){
-    if (numberOfLinksScraped < linksjson.length) { setTimeout(sortAndWrite, 100) } else {
+  sortAndGroomAndWrite();
+  function sortAndGroomAndWrite(){
+    if (numberOfLinksScraped < linksjson.length) { setTimeout(sortAndGroomAndWrite, 100) } else {
       var timerFunction1 = setTimeout(function(){
-        json.sort(function(a,b) { 
+        json.sort(function(a,b) {
           if(a.agegrade == '') { return +1 };
           if(a.parkrun !== b.parkrun) { if(a.parkrun < b.parkrun) {return -1} else if(a.parkrun > b.parkrun) {return +1} };
           if (parseInt(b.agegrade) > parseInt(a.agegrade)) { return  1} else { return -1};
-        });
-        console.log('finished sorting'); 
-      },500); // lets allow 200ms in case the json is not fully assigned then sort it.
+        }); 
+      },500); // lets allow 500ms in case the json is not fully assigned then sort it.
 
-      // STAGE 4: ASSIGN age grade positions and groom data
       var timerFunction3 = setTimeout(function(){
         console.log('start grooming');
-        var previousWebSite = json[0].parkrun;
-        counter = 1;
-        numberSpliced = 0;
-        for (i = 0; i< json.length; i++){
-          if(json[i].parkrun !== previousWebSite){
-            //console.log("detected a change in parkrun", i, json[i].parkrun, previousWebSite);
-            previousWebSite = json[i].parkrun;
-            counter = 1;
-          };
+        var numberSpliced = 0;
+        var doneSplicing = false;
+        for (i=0; i<json.length; i++){
           if(json[i].parkrunner == "Unknown" || json.time == ""){
-            //console.log('*** want to splice ', json[i].parkrun, "***" , json[i].pos, '**', i);
-            json.splice(i,1);
-            numberSpliced +=1;
-          } else {
-            json[i].agerank = counter;
+              json.splice(i,1);
+              numberSpliced +=1;
+              i-=1;
+              if(i === (json.length-1)){
+                console.log('finished splicing !!!');
+                doneSplicing = true;
+              }
+          }}
+        console.log("I spliced:", numberSpliced, 'and doneSplicing is', doneSplicing);
+
+        var previousWebSite = json[0].parkrun;
+        var placeCounter = 1;
+        var doneAssigningPlaces = false;
+        assignAgeGradePlacePositions();
+        function assignAgeGradePlacePositions() {
+          if(!doneSplicing){setTimeout(assignAgeGradePlacePositions, 100)} else {
+            for (i = 0; i< json.length; i++){
+              if(json[i].parkrun !== previousWebSite){
+                console.log('Detect run change from', previousWebSite.slice(0, previousWebSite.indexOf('parkrun')), ' to ', json[i].parkrun.slice(0, json[i].parkrun.indexOf('parkrun')), 'at', i, 'of', json.length);
+                previousWebSite = json[i].parkrun;
+                placeCounter = 1;
+              } 
+              json[i].agerank = placeCounter;
+              placeCounter +=1;
+              if(i === (json.length-1)){doneAssigningPlaces = true; console.log('Done assigning places')};
+            };
           }
-          counter +=1;
-        };
-        console.log("I spliced:", numberSpliced);
+        }
 
         // STAGE 5: SAVE THE DATA
-        var timerFunction2 = setTimeout(function(){
-          console.log('****** WRITING FILES ******');
-          fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
-          fs.writeFileSync('public/counts.json', JSON.stringify(countsjson, null, 4));
-          console.log("File written! - Check your output.json and countsjson files");
-        }, 1500);  // allow this to splice the data before save
-      }, 1000);  // end of stage 4 assigning and grooming
+        saveTheData();
+        function saveTheData(){
+          if(!doneAssigningPlaces) { setTimeout(saveTheData, 100) } else {
+            console.log('****** WRITING FILES ******');
+            fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
+            fs.writeFileSync('public/counts.json', JSON.stringify(countsjson, null, 4));
+            console.log("File written! - Check your output.json and countsjson files");
+          }
+      }
+
+
+      }, 2000);  // end of stage 4 assigning and grooming
     }
   }  // end of sort and write  
-  //  END OF VERY CLEVER IDEA
 
 }, 1500); // end of stage 2 (1500ms is to collect the links) timerFunction0;
 
 
 var timerFunction4 = setTimeout(function(){
   res.sendfile('./public/results.html');
-}, 4300);
+}, 6000);
 });
 
 function doAnalytics(page, req){
