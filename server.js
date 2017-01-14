@@ -22,6 +22,7 @@ app.get('/', function(req, res){
 });
 
 app.get('/results', function(req, res){
+  doAnalytics("scrape", req);
   res.sendfile('./public/results.html');
 });
 
