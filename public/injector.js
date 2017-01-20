@@ -34,14 +34,16 @@ $( document ).ready(function() {
 
       for (i = 0; i < result.length; i++) {
 
-        if(result[i].AgeRank < 2){agePosClass="good-in-age"}else{agePosClass="normal-age"};
-        if(parseFloat(result[i].agegrade) > 70){ ageCatClass="fast-age" }else{ageCatClass="normal-age"};
-        if(result[i].Note =="New PB!"){pbclass="newpb"}else{pbclass="nopb"};
+        if(result[i].club == "Eastleigh RC"){
+          if(result[i].AgeRank < 2){agePosClass="good-in-age"}else{agePosClass="normal-age"};
+          if(parseFloat(result[i].agegrade) > 70){ ageCatClass="fast-age" }else{ageCatClass="normal-age"};
+          if(result[i].Note =="New PB!"){pbclass="newpb"}else{pbclass="nopb"};
 
-        htmltoappend = htmltoappend + '<tr class="row">' + '<td>' + result[i].parkrun.split(" ")[0] + '</td><td>'+ result[i].parkrun.substr(result[i].parkrun.length-10) + '</td><td class="position">' + result[i].pos + '</td><td class="parkrunner">' + result[i].parkrunner + '</td>' + '<td class="time">' + result[i].time + '</td>' + '<td class="agecat">' + result[i].agecat + '</td>';
-        htmltoappend = htmltoappend + '<td class="agegrade ' + ageCatClass +  '"">' + result[i].agegrade + '</td>'+ '<td class='+ agePosClass + '>'+ result[i].agerank + '</td>' + '<td id="gender">' + result[i].gender + '</td>' + '<td class="genderpos">' + result[i].genderpos + '</td>';
-        htmltoappend = htmltoappend + '<td class="note '+pbclass + '">' + result[i].Note + '</td>';
-        htmltoappend = htmltoappend + '<td class="totalruns">' + result[i].TotalRuns + '</th>' + '</tr>';
+          htmltoappend = htmltoappend + '<tr class="row">' + '<td>' + result[i].parkrun.split(" ")[0] + '</td><td>'+ result[i].parkrun.substr(result[i].parkrun.length-10) + '</td><td class="position">' + result[i].pos + '</td><td class="parkrunner">' + result[i].parkrunner + '</td>' + '<td class="time">' + result[i].time + '</td>' + '<td class="agecat">' + result[i].agecat + '</td>';
+          htmltoappend = htmltoappend + '<td class="agegrade ' + ageCatClass +  '"">' + result[i].agegrade + '</td>'+ '<td class='+ agePosClass + '>'+ result[i].agerank + '</td>' + '<td id="gender">' + result[i].gender + '</td>' + '<td class="genderpos">' + result[i].genderpos + '</td>';
+          htmltoappend = htmltoappend + '<td class="note '+pbclass + '">' + result[i].Note + '</td>';
+          htmltoappend = htmltoappend + '<td class="totalruns">' + result[i].TotalRuns + '</th>' + '</tr>';
+          }
       }
       htmltoappend = htmltoappend + '</tbody>' + '</table>';
       $('#inject_here').append(htmltoappend);
