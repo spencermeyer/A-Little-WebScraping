@@ -2,6 +2,16 @@
 
 $( document ).ready(function() {
   //console.log("This is injector.js required in results html");
+  var sortyBy='POS';
+
+  $('#sorter').append('<button type="button" class="btn btn-primary">Sort By Age Grade Position</button>');
+  $('#sorter').click(function(){
+    console.log('Clicked!!!!');
+    sortBy='AGE';
+    experimentEFB(); /// is not a function
+    $('#inject_here').detach();
+  })
+
 
   var timerFunction1 = setTimeout(function(){
       var htmlIntro = '<p> Today there were runners from: </p>';
@@ -16,6 +26,10 @@ $( document ).ready(function() {
         $('#spinner').css("display", "none");
       });
   },1000);
+
+  var experimentEFB = function(){
+    console.log('eelsfeastbucket');
+  };
 
   var timerFunction2 = setTimeout(function(){
     var pbclass="nopb";
@@ -59,7 +73,6 @@ $( document ).ready(function() {
       htmltoappend = htmltoappend + '</tbody>' + '</table>';
       $('#inject_here').append(htmltoappend);
     });
-  //console.log("Injected2 ?");
   },6600);
 
 
