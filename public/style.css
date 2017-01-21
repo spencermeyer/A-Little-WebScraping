@@ -10,13 +10,11 @@ th #gender, td #gender{
   width: 6%;
   /*  not working */
 }
-
 .newpb {
   background-color: yellow;
 }
 .nopb {
 }
-
 .fast-age {
   background-color: #ff6666;
 }
@@ -34,4 +32,7 @@ a {
 }
 .gender-pos-win{
   background-color: #00ff00;
+}
+#sorter1 {
+  float: left;
 }
