@@ -7,8 +7,14 @@ $( document ).ready(function() {
     insertData('AGE');
   });
 
-  $('#sorter2').append('<button type="button" class="btn btn-primary">Sort By Position</button>');
+  $('#sorter2').append('<button type="button" class="btn btn-primary">Sort By Age Grade, only top 12s</button>');
   $('#sorter2').click(function(){
+    $('#inject_here').children("table").remove();
+    insertData('AGE12');
+  });
+
+  $('#sorter3').append('<button type="button" class="btn btn-primary">Sort By Position</button>');
+  $('#sorter3').click(function(){
     $('#inject_here').children("table").remove();
     insertData('POS');
   });
@@ -32,13 +38,10 @@ $( document ).ready(function() {
   }, 6600);
 
   function insertData(sortByArg){
-    console.log('this is the injection and sortBy is:', sortByArg);
     var pbclass="nopb";
     var ageCatClass="normal-age";
     var agePosClass="normal-age";
-    //console.log("should be 1.5 seconds after loading");
     $.getJSON("output.json", function (result) {
-      console.log('got some json?', result.length);
       var htmltoappend = '<table id="results" class="table table-bordered table-hover">'
       htmltoappend = htmltoappend + '<thead>'
       htmltoappend = htmltoappend + '<tr class="row"><th>'+'Parkrun'+'</th><th>'+'Date'+'</th><th>' + "Result" + '</th><th>' + 'Parkrunner' + '</th>' + '<th>' + 'Time' + '</th>' + '<th>' + 'Agecat' + '</th>' + '<th>' + 'Agegrade' +'<th>' + 'AgeGradePos' + '</th>' + '<th id="gender">'+'Gender' + '</th>' +  '<th>' + 'GenderPos' + '</th>' + '<th>' + 'Note' + '</th>' + '<th>' + 'Total Runs' + '</th></tr>';
@@ -54,20 +57,21 @@ $( document ).ready(function() {
         if(a.parkrun !== b.parkrun) { if(a.parkrun < b.parkrun) {return -1} else if(a.parkrun > b.parkrun) {return +1} };
         if(sortByArg == 'POS'){
           if (parseInt(b.pos) < parseInt(a.pos)) { return  1} else { return -1};
-        } else if (sortByArg == 'AGE') {
+        } else if (sortByArg == 'AGE' || sortByArg == 'AGE12') {
           if (parseInt(b.agegrade) > parseInt(a.agegrade)) { return  1} else { return -1};
         } else { return 0 };
       });
-
       for (i = 0; i < result.length; i++) {
-        if(result[i].club == "Eastleigh RC"){
-          if(result[i].AgeRank < 2){agePosClass="good-in-age"}else{agePosClass="normal-age"};
-          if(parseFloat(result[i].agegrade) > 70){ ageCatClass="fast-age" }else{ageCatClass="normal-age"};
-          if(result[i].Note =="New PB!"){pbclass="newpb"}else{pbclass="nopb"};
-          htmltoappend = htmltoappend + '<tr class="row">' + '<td>' + result[i].parkrun.split(" ")[0] + '</td><td>'+ result[i].parkrun.substr(result[i].parkrun.length-10) + '</td><td class="position">' + result[i].pos + '</td><td class="parkrunner">' + result[i].parkrunner + '</td>' + '<td class="time">' + result[i].time + '</td>' + '<td class="agecat">' + result[i].agecat + '</td>';
-          htmltoappend = htmltoappend + '<td class="agegrade ' + ageCatClass +  '"">' + result[i].agegrade + '</td>'+ '<td class='+ agePosClass + '>'+ result[i].agerank + '</td>' + '<td id="gender">' + result[i].gender + '</td>' + '<td class="genderpos">' + result[i].genderpos + '</td>';
-          htmltoappend = htmltoappend + '<td class="note '+pbclass + '">' + result[i].Note + '</td>';
-          htmltoappend = htmltoappend + '<td class="totalruns">' + result[i].TotalRuns + '</th>' + '</tr>';
+        if(sortByArg == 'AGE12' && result[i].agerank < 13 || sortByArg == 'AGE' || sortByArg == 'POS') {
+          if(result[i].club == "Eastleigh RC"){
+            if(result[i].AgeRank < 2){agePosClass="good-in-age"}else{agePosClass="normal-age"};
+            if(parseFloat(result[i].agegrade) > 70){ ageCatClass="fast-age" }else{ageCatClass="normal-age"};
+            if(result[i].Note =="New PB!"){pbclass="newpb"}else{pbclass="nopb"};
+            htmltoappend = htmltoappend + '<tr class="row">' + '<td>' + result[i].parkrun.split(" ")[0] + '</td><td>'+ result[i].parkrun.substr(result[i].parkrun.length-10) + '</td><td class="position">' + result[i].pos + '</td><td class="parkrunner">' + result[i].parkrunner + '</td>' + '<td class="time">' + result[i].time + '</td>' + '<td class="agecat">' + result[i].agecat + '</td>';
+            htmltoappend = htmltoappend + '<td class="agegrade ' + ageCatClass +  '"">' + result[i].agegrade + '</td>'+ '<td class='+ agePosClass + '>'+ result[i].agerank + '</td>' + '<td id="gender">' + result[i].gender + '</td>' + '<td class="genderpos">' + result[i].genderpos + '</td>';
+            htmltoappend = htmltoappend + '<td class="note '+pbclass + '">' + result[i].Note + '</td>';
+            htmltoappend = htmltoappend + '<td class="totalruns">' + result[i].TotalRuns + '</th>' + '</tr>';
+            }
           }
       }
       htmltoappend = htmltoappend + '</tbody>' + '</table>';

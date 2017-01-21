@@ -33,6 +33,7 @@ a {
 .gender-pos-win{
   background-color: #00ff00;
 }
-#sorter1 {
+#sorter1, #sorter2, #sorter3 {
   float: left;
+  padding-left: 10px;
 }
