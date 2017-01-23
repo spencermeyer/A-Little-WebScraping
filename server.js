@@ -15,6 +15,18 @@ app.use(morgan('dev'));                           // log every request to the co
 app.use(cheerio);                                 // this is the webscraper
 app.use(helmet());                                // security type stuff
 
+var milestones = [];
+fs.readFile('public/milestones.json', function (err1, data) {
+  if (err1) {
+          console.error(err1);
+      } else { 
+  var myData = JSON.parse(data);
+  }
+  myData.forEach (function(data ){
+    console.log('read a milestone', data);
+  });
+});
+
 // configure routes
 app.get('/', function(req, res){
   doAnalytics("Home", req);
@@ -31,8 +43,14 @@ app.get('/scrape2', function(req, res){
   res.sendfile('./public/results2.html');
 });
 
+app.get('/milestones', function(req, res){
+  doAnalytics("milestones", req);
+  res.sendfile('./public/milestones.html');
+});
+
 // this route scrapes, makes a json and sends the results view
 app.get('/scrape', function(req, res){
+
   process.stdout.write('\033c');
   var urlforscrape;
   if (process.env.OPENSHIFT_NODEJS_PORT) {
@@ -104,6 +122,9 @@ var timerFunction0 = setTimeout(function(){
             }   
             if(children.eq(5).text()==="M"){numberOfMen[runTitle]+=1};
             if(children.eq(5).text()==="F"){numberOfWomen[runTitle]+=1};
+            if(children.eq(9).text()==="99" || children.eq(9).text==="49" || children.eq(9).text==="199"){
+              milestones.push({"parkrunner" :  children.eq(1).text(), "TotalRuns" : children.eq(9).text()});
+            }
           }); // end of each element in table sortable
          }
          countsjson.push({ "runTitle" : runTitle, "numberOfEastleighMen" : numberOfEastleighMen[runTitle], "numberOfEastleighWomen" : numberOfEastleighWomen[runTitle], "numberOfMen": numberOfMen[runTitle], "numberOfWomen": numberOfWomen[runTitle] });
@@ -147,7 +168,7 @@ var timerFunction0 = setTimeout(function(){
           if(!doneSplicing){setTimeout(assignAgeGradePlacePositions, 100)} else {
             for (i = 0; i< json.length; i++){
               if(json[i].parkrun !== previousWebSite){
-                console.log('Detect run change from', previousWebSite.slice(0, previousWebSite.indexOf('parkrun')), ' to ', json[i].parkrun.slice(0, json[i].parkrun.indexOf('parkrun')), 'at', i, 'of', json.length);
+                // console.log('Detect run change from', previousWebSite.slice(0, previousWebSite.indexOf('parkrun')), ' to ', json[i].parkrun.slice(0, json[i].parkrun.indexOf('parkrun')), 'at', i, 'of', json.length);
                 previousWebSite = json[i].parkrun;
                 placeCounter = 1;
               } 
@@ -165,6 +186,7 @@ var timerFunction0 = setTimeout(function(){
             console.log('****** WRITING FILES ******');
             fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
             fs.writeFileSync('public/counts.json', JSON.stringify(countsjson, null, 4));
+            fs.writeFileSync('public/milestones.json', JSON.stringify(milestones, null, 4));
             console.log("File written! - Check your output.json and countsjson files");
           }
       }
