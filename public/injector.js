@@ -4,19 +4,25 @@ $( document ).ready(function() {
   $('#sorter1').append('<button type="button" class="btn btn-primary">Sort By Age Grade</button>');
   $('#sorter1').click(function(){
     $('#inject_here').children("table").remove();
+    $('#inject_here2').children("table").remove();
     insertData('AGE');
+    insertCountsData()
   });
 
   $('#sorter2').append('<button type="button" class="btn btn-primary">Sort By Age Grade, only top 12s</button>');
   $('#sorter2').click(function(){
     $('#inject_here').children("table").remove();
+    $('#inject_here2').children("table").remove();
     insertData('AGE12');
+    insertCountsData()
   });
 
   $('#sorter3').append('<button type="button" class="btn btn-primary">Sort By Position</button>');
   $('#sorter3').click(function(){
     $('#inject_here').children("table").remove();
+    $('#inject_here2').children("table").remove();
     insertData('POS');
+    insertCountsData()
   });
 
   var introFunction1 = setTimeout(function(){
@@ -36,6 +42,10 @@ $( document ).ready(function() {
   var mainResultsTimer = setTimeout(function(){
     insertData('AGE');
   }, 6600);
+
+  var countsResultsTimer = setTimeout(function(){
+    insertCountsData();
+  }, 1500);
 
   function insertData(sortByArg){
     var pbclass="nopb";
@@ -79,7 +89,7 @@ $( document ).ready(function() {
     });
   };
 
-  var timerFunction3 = setTimeout(function(){
+  function insertCountsData(){
     var countsHTML = '<table class="table table-bordered table-hover"><th>Run Location</th><th>Number Of Eastleigh Men</th><th>Number of Eastleigh Women</th><th>Total Men</th><th>Total Women</th><th>Total</th>'
     $.getJSON("counts.json", function(links){
       //console.log("got the counts");
@@ -88,11 +98,10 @@ $( document ).ready(function() {
         countsHTML = countsHTML + '<tr><td>' + runTitleForInjection + '</td><td>' + links[i].numberOfEastleighMen + '</td><td>' + links[i].numberOfEastleighWomen+'</td><td>'+links[i].numberOfMen + '</td><td>' + links[i].numberOfWomen +  '</td><td>'+ (parseInt(links[i].numberOfMen) + parseInt(links[i].numberOfWomen)) +'</td></tr>';
       }
     });
-
     var timerFunction4 = setTimeout(function(){
       countsHTML = countsHTML + '</table>';
       $("#inject_here2").append(countsHTML);
     }, 1500);
-  },1500);
+  };
 
 });
