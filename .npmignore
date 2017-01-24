@@ -1,1 +1,6 @@
-*.json
+links.json
+output.json
+analytics.json
+counts.json
+top12s.json
+top12thsAgeGradeForRunjson.json
