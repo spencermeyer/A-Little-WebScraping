@@ -1,5 +1,6 @@
 public/output.json
 public/analytics.json
 todo.md
-*.json
-!package.json
+public/counts.json
+public/links.json
+public/milestones.json

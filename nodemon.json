@@ -1,0 +1,4 @@
+{
+  "verbose": true,
+  "ignore": ["*.json", "README.md", "todo.md", "public/*.json" ]
+}
