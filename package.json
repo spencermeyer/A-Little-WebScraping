@@ -13,6 +13,7 @@
       "express"    : "latest",
       "request"    : "latest",
       "cheerio"    : "latest",
+      "morgan"     :  "latest",
       "helmet"     : "latest"
   }
 }
