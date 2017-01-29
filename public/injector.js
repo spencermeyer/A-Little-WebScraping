@@ -68,7 +68,7 @@ $( document ).ready(function() {
         if(sortByArg == 'POS'){
           if (parseInt(b.pos) < parseInt(a.pos)) { return  1} else { return -1};
         } else if (sortByArg == 'AGE' || sortByArg == 'AGE12') {
-          if (parseInt(b.agegrade) > parseInt(a.agegrade)) { return  1} else { return -1};
+          if (parseFloat(b.agegrade) > parseFloat(a.agegrade)) { return  1} else { return -1};
         } else { return 0 };
       });
       for (i = 0; i < result.length; i++) {
