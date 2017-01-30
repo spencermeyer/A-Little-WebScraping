@@ -121,9 +121,32 @@ var timerFunction0 = setTimeout(function(){
             }   
             if(children.eq(5).text()==="M"){numberOfMen[runTitle]+=1};
             if(children.eq(5).text()==="F"){numberOfWomen[runTitle]+=1};
-            if(children.eq(9).text()==="99" || children.eq(9).text==="49" || children.eq(9).text==="199"){
-              milestones.push({"parkrunner" :  children.eq(1).text(), "TotalRuns" : children.eq(9).text()});
-            }
+            var nearSeniorMilestone = (children.eq(9).text()==="99" || children.eq(9).text()==="49" || children.eq(9).text()==="199" || children.eq(9).text()==="249")? true : false;
+            var areWeInterested = ( $('#primary h2').text().indexOf('Eastleigh') > -0.5 || children.eq(7).text() ==="Eastleigh RC" )? true : false;
+            var mileStonetoClear = (children.eq(9).text()==="10" || children.eq(9).text()==="100" || children.eq(9).text()==="50" || children.eq(9).text()==="200" || children.eq(9).text()==="250")? true : false;
+            if(mileStonetoClear) {console.log('SHOULD CLEAR', children.eq(1).text(), children.eq(9).text(), ' IF STORED');}
+            var juniorAgeGrade = ((children.eq(4).text()).indexOf("J") > -0.5) ? true : false;
+            var nearJuniorMileStone = (children.eq(9).text()==="9" && juniorAgeGrade)? true : false;
+            // var recordExists = function(){
+            //   milestones.forEach(milestone){
+            //     if milestone.parkrunner === children.eq(1).text() { return true } else { return false }
+            //   }
+            // }
+            //var mileStoneIncludedAlready = ()? true : false;
+            if((nearSeniorMilestone || nearJuniorMileStone) && areWeInterested) { 
+              milestones.push({"parkrunner" :  children.eq(1).text(), "TotalRuns" : children.eq(9).text(), "club":children.eq(7).text(), "agecat" : children.eq(3).text()});
+            };
+            milestones.forEach(function(milestone){
+              console.log('finding to clear...');
+              if (mileStonetoClear && milestone.parkrunner === children.eq(1).text()) {
+                console.log('gonna kill child ', milestone.parkrunner, 'cos theyve done their ms');
+              } 
+            });
+
+
+            // now go over entire milestones.json and cut out completed milestones.  :)
+
+
           }); // end of each element in table sortable
          }
          countsjson.push({ "runTitle" : runTitle, "numberOfEastleighMen" : numberOfEastleighMen[runTitle], "numberOfEastleighWomen" : numberOfEastleighWomen[runTitle], "numberOfMen": numberOfMen[runTitle], "numberOfWomen": numberOfWomen[runTitle] });

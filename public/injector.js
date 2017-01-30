@@ -1,28 +1,22 @@
 $( document ).ready(function() {
-  //console.log("This is injector.js required in results html");
 
-  $('#sorter1').append('<button type="button" class="btn btn-primary">Sort By Age Grade</button>');
-  $('#sorter1').click(function(){
-    $('#inject_here').children("table").remove();
-    $('#inject_here2').children("table").remove();
-    insertData('AGE');
-    insertCountsData()
-  });
+  var buttons = [{id: '#sorter1', title: 'Sort By Age Grade', argument: 'AGE' },
+                 {id: '#sorter2', title: 'Sort By Age Grade, only top 12s', argument: 'AGE12'},
+                 {id: '#sorter3', title: 'Sort By Position', argument: 'POS'}]; 
 
-  $('#sorter2').append('<button type="button" class="btn btn-primary">Sort By Age Grade, only top 12s</button>');
-  $('#sorter2').click(function(){
-    $('#inject_here').children("table").remove();
-    $('#inject_here2').children("table").remove();
-    insertData('AGE12');
-    insertCountsData()
-  });
+  buttons.forEach(function(button){
+    $(button.id).append('<button type="button" class="btn btn-primary">'+button.title+'</button>');
+    $(button.id).click(function(){
+      $('#inject_here').children("table").remove();
+      $('#inject_here2').children("table").remove();
+      insertData(button.argument);
+      insertCountsData();
+    });
+  });               
 
-  $('#sorter3').append('<button type="button" class="btn btn-primary">Sort By Position</button>');
-  $('#sorter3').click(function(){
-    $('#inject_here').children("table").remove();
-    $('#inject_here2').children("table").remove();
-    insertData('POS');
-    insertCountsData()
+  $('#sorter-milestones').append('<a class="btn btn-success" href="/milestones">Milestones (new Feature!)</a>');
+  $('#sorter-milestones').click(function(){
+    console.log("navigate!!!! to milestones");
   });
 
   var introFunction1 = setTimeout(function(){
