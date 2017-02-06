@@ -124,7 +124,7 @@ var timerFunction0 = setTimeout(function(){
             var nearSeniorMilestone = (children.eq(9).text()==="99" || children.eq(9).text()==="49" || children.eq(9).text()==="199" || children.eq(9).text()==="249")? true : false;
             var areWeInterested = ( $('#primary h2').text().indexOf('Eastleigh') > -0.5 || children.eq(7).text() ==="Eastleigh RC" )? true : false;
             var mileStonetoClear = (children.eq(9).text()==="10" || children.eq(9).text()==="100" || children.eq(9).text()==="50" || children.eq(9).text()==="200" || children.eq(9).text()==="250")? true : false;
-            if(mileStonetoClear) {console.log('SHOULD CLEAR', children.eq(1).text(), children.eq(9).text(), ' IF STORED');}
+            //if(mileStonetoClear) {console.log('SHOULD CLEAR', children.eq(1).text(), children.eq(9).text(), ' IF STORED');}
             var juniorAgeGrade = ((children.eq(4).text()).indexOf("J") > -0.5) ? true : false;
             var nearJuniorMileStone = (children.eq(9).text()==="9" && juniorAgeGrade)? true : false;
             // var recordExists = function(){
@@ -137,7 +137,7 @@ var timerFunction0 = setTimeout(function(){
               milestones.push({"parkrunner" :  children.eq(1).text(), "TotalRuns" : children.eq(9).text(), "club":children.eq(7).text(), "agecat" : children.eq(3).text()});
             };
             milestones.forEach(function(milestone){
-              console.log('finding to clear...');
+              // console.log('finding to clear...');
               if (mileStonetoClear && milestone.parkrunner === children.eq(1).text()) {
                 console.log('gonna kill child ', milestone.parkrunner, 'cos theyve done their ms');
               } 
@@ -150,7 +150,9 @@ var timerFunction0 = setTimeout(function(){
           }); // end of each element in table sortable
          }
          countsjson.push({ "runTitle" : runTitle, "numberOfEastleighMen" : numberOfEastleighMen[runTitle], "numberOfEastleighWomen" : numberOfEastleighWomen[runTitle], "numberOfMen": numberOfMen[runTitle], "numberOfWomen": numberOfWomen[runTitle] });
-         numberOfLinksScraped += 1;
+
+         var waitABitAfterScrape  = setTimeout(function() {numberOfLinksScraped += 1;},500);
+
          console.log('And Number of links scraped is ', numberOfLinksScraped, 'requires', linksjson.length);
          console.log('and the data size is ', json.length);  
       });
@@ -169,7 +171,7 @@ var timerFunction0 = setTimeout(function(){
       },500); // lets allow 500ms in case the json is not fully assigned then sort it.
 
       var timerFunction3 = setTimeout(function(){
-        console.log('start grooming');
+        console.log('start splicing');
         var numberSpliced = 0;
         for (i=0; i<json.length; i++){
           if(json[i].parkrunner == "Unknown" || json.time == ""){
@@ -182,38 +184,87 @@ var timerFunction0 = setTimeout(function(){
               }
           }}
         console.log("I spliced:", numberSpliced, 'and doneSplicing is', doneSplicing);
-        var previousWebSite = json[0].parkrun;
+        var previousRunSite = json[0].parkrun;
         var placeCounter = 1;
         var doneAssigningPlaces = false;
         assignAgeGradePlacePositions();
+        var doneAssigningAgeGradePositions = false;
         function assignAgeGradePlacePositions() {
           if(!doneSplicing){setTimeout(assignAgeGradePlacePositions, 100)} else {
+            console.log('start assigning age grade positions');
             for (i = 0; i< json.length; i++){
-              if(json[i].parkrun !== previousWebSite){
-                // console.log('Detect run change from', previousWebSite.slice(0, previousWebSite.indexOf('parkrun')), ' to ', json[i].parkrun.slice(0, json[i].parkrun.indexOf('parkrun')), 'at', i, 'of', json.length);
-                previousWebSite = json[i].parkrun;
+              if(json[i].parkrun !== previousRunSite){
+                previousRunSite = json[i].parkrun;
                 placeCounter = 1;
               } 
-              json[i].agerank = placeCounter;
+              json[i].agegraderank = placeCounter;
               placeCounter +=1;
-              if(i === (json.length-1)){doneAssigningPlaces = true; console.log('Done assigning places, setting off save')};
+              if(i === (json.length-1)){
+                var waitABitAfterAgeGradeAssignment  = setTimeout(function() {
+                  doneAssigningAgeGradePositions = true;
+                  console.log('Done assigning places, setting off sort by Cat');
+                },500);
+              } 
             };
           }
         }
 
+        var doneAssigningAgeCatPositions = false;
+        var placeCounter = 1;
+        assignAgeCategoryPlacePositions();
+        function assignAgeCategoryPlacePositions(){
+          if(!doneAssigningAgeGradePositions){setTimeout(assignAgeCategoryPlacePositions, 100)} else {
+            console.log('and now running assignAgeCategoryPlacePositions');
+            json.sort(function(a,b) {
+              if(textToNumber(a.parkrun) === textToNumber(b.parkrun)) {
+                if(textToNumber(a.agecat) === textToNumber(b.agecat)) {
+                  return (parseFloat(b.agegrade) - parseFloat(a.agegrade));
+                } else {
+                  return (textToNumber(a.agecat) - textToNumber(b.agecat));
+                }
+              } else {
+                return (textToNumber(a.parkrun) - textToNumber(b.parkrun));
+              }
+            }); 
+            // ok now write in the age cat positions *****
+            var waitABitAfterAgeCatSorting = setTimeout(function(){
+              var placeCounter  = 1;
+              var previousRunSite=json[0].website;
+              var previousAgeCat=json[0].agecat;
+              for (i = 0; i< json.length; i++){
+                // here assign increasing postions unless there is a change in parkrun OR agecat.
+                if (json[i].parkrun !== previousRunSite || previousAgeCat !== json[i].agecat) { 
+                  placeCounter = 1;
+                  previousRunSite = json[i].parkrun;
+                  previousAgeCat = json[i].agecat; 
+                }
+                json[i].agecatpos = placeCounter;
+                placeCounter +=1;
+              }
+            }, 300);
+              
+            var waitABitAfterAgeCatAssignment  = setTimeout(function() {
+              doneAssigningAgeCatPositions = true;
+              console.log('Just set doneAssigningAgeCatPositions true so should set off save');
+            },1500);
+          }
+        }
+
+        // should be easy !!!!
+
         // STAGE 5: SAVE THE DATA
         saveTheData();
         function saveTheData(){
-          if(!doneAssigningPlaces) { setTimeout(saveTheData, 100) } else {
+          if(!doneAssigningAgeCatPositions) { setTimeout(saveTheData, 100) } else {
             console.log('****** WRITING FILES ******');
             fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
             fs.writeFileSync('public/counts.json', JSON.stringify(countsjson, null, 4));
             fs.writeFileSync('public/milestones.json', JSON.stringify(milestones, null, 4));
-            console.log("Files written! - Check output.json and countsjson files");
+            console.log("Files written! - Check output.json, counts.json, and milestones.json files");
           }
         }
 
-      }, 2000);  // end of stage 4 assigning and grooming
+      }, 2000);
     }
   }  // end of sort and write  
 
@@ -224,6 +275,14 @@ var timerFunction4 = setTimeout(function(){
   res.sendfile('./public/results.html');
 }, 6000);
 });
+
+function textToNumber(arg) {
+  var summedNumber = 0;
+    for (i = 0; i< arg.length; i++){
+      summedNumber = summedNumber + arg.charCodeAt(i);
+    }
+    return summedNumber;
+}
 
 function doAnalytics(page, req){
   analsjson=[];
