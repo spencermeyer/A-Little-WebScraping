@@ -24,6 +24,9 @@ th #gender, td #gender{
 .first-in-age-cat{
   background-color: #ccff33;
 }
+.first-in-gender{
+  background-color: #b3ecff;
+}
 .intro-links {
   white-space: nowrap;
 }
@@ -39,4 +42,7 @@ a {
 #sorter1, #sorter2, #sorter3, #sorter-milestones {
   display: inline-block;
   padding-left: 10px;
+}
+#milestones{
+  max-width: 90%;
 }
