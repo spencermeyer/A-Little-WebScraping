@@ -48,7 +48,7 @@ $( document ).ready(function() {
     $.getJSON("output.json", function (result) {
       var htmltoappend = '<table id="results" class="table table-bordered table-hover">'
       htmltoappend = htmltoappend + '<thead>'
-      htmltoappend = htmltoappend + '<tr class="row"><th>'+'Parkrun'+'</th><th>'+'Date'+'</th><th>' + "Result" + '</th><th>' + 'Parkrunner' + '</th>' + '<th>' + 'Time' + '</th>' + '<th>' + 'Agecat' + '</th>' + '<th>' + 'Agegrade' +'<th>' + 'AgeGradePos' + '</th>' + '<th id="gender">'+'Gender' + '</th>' +  '<th>' + 'GenderPos' + '</th>' + '<th>' + 'Note' + '</th>' + '<th>' + 'Total Runs' + '</th></tr>';
+      htmltoappend = htmltoappend + '<tr class="row"><th>'+'Parkrun'+'</th><th>'+'Date'+'</th><th>' + "Result" + '</th><th>' + 'Parkrunner' + '</th>' + '<th>' + 'Time' + '</th>' + '<th>' + 'Agecat' + '</th>' + '<th>' + 'AgecatPos *' + '</th>' + '<th>' + 'Agegrade' +'<th>' + 'AgeGradePos' + '</th>' + '<th id="gender">'+'Gender' + '</th>' +  '<th>' + 'GenderPos' + '</th>' + '<th>' + 'Note' + '</th>' + '<th>' + 'Total Runs' + '</th></tr>';
       htmltoappend = htmltoappend + '</thead><tbody>'
       // here want to sort the result
       result.forEach(function(line, index){ 
@@ -68,12 +68,14 @@ $( document ).ready(function() {
       for (i = 0; i < result.length; i++) {
         if(sortByArg == 'AGE12' && result[i].agegraderank < 13 || sortByArg == 'AGE' || sortByArg == 'POS') {
           if(result[i].club == "Eastleigh RC"){
-            if(result[i].AgeRank < 2){agePosClass="good-in-age"}else{agePosClass="normal-age"};
+            if(result[i].agegraderank < 2){agePosClass="first-in-age"}else{agePosClass="normal-age"};
             if(parseFloat(result[i].agegrade) > 70){ ageCatClass="fast-age" }else{ageCatClass="normal-age"};
             if(result[i].Note =="New PB!"){pbclass="newpb"}else{pbclass="nopb"};
+            if(result[i].agecatpos == 1) {ageCatPosClass="first-in-age-cat"}else{ageCatPosClass="normal-age-cat-pos"}
             htmltoappend = htmltoappend + '<tr class="row">' + '<td>' + result[i].parkrun.split(" ")[0] + '</td><td>'+ result[i].parkrun.substr(result[i].parkrun.length-10) + '</td><td class="position">' + result[i].pos + '</td><td class="parkrunner">' + result[i].parkrunner + '</td>' + '<td class="time">' + result[i].time + '</td>' + '<td class="agecat">' + result[i].agecat + '</td>';
+            htmltoappend = htmltoappend +  '<td class=' + ageCatPosClass + '>' + result[i].agecatpos + '</td>';
             htmltoappend = htmltoappend + '<td class="agegrade ' + ageCatClass +  '"">' + result[i].agegrade + '</td>'+ '<td class='+ agePosClass + '>'+ result[i].agegraderank + '</td>' + '<td id="gender">' + result[i].gender + '</td>' + '<td class="genderpos">' + result[i].genderpos + '</td>';
-            htmltoappend = htmltoappend + '<td class="note '+pbclass + '">' + result[i].Note + '</td>';
+            htmltoappend = htmltoappend + '<td class="note ' + pbclass + '">' + result[i].Note + '</td>';
             htmltoappend = htmltoappend + '<td class="totalruns">' + result[i].TotalRuns + '</th>' + '</tr>';
             }
           }
