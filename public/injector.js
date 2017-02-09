@@ -51,11 +51,11 @@ $( document ).ready(function() {
       htmltoappend = htmltoappend + '<tr class="row"><th>'+'Parkrun'+'</th><th>'+'Date'+'</th><th>' + "Result" + '</th><th>' + 'Parkrunner' + '</th>' + '<th>' + 'Time' + '</th>' + '<th>' + 'Agecat' + '</th>' + '<th>' + 'AgecatPos *' + '</th>' + '<th>' + 'Agegrade' +'<th>' + 'AgeGradePos' + '</th>' + '<th id="gender">'+'Gender' + '</th>' +  '<th>' + 'GenderPos' + '</th>' + '<th>' + 'Note' + '</th>' + '<th>' + 'Total Runs' + '</th></tr>';
       htmltoappend = htmltoappend + '</thead><tbody>'
       // here want to sort the result
-      result.forEach(function(line, index){ 
-        if(!line.club.includes('Eastleigh RC')){
-          result.splice(index,1);
-        }
-      });
+      // result.forEach(function(line, index){ 
+      //   if(!line.club.includes('Eastleigh RC')){
+      //     result.splice(index,1);
+      //   }
+      // });
       result.sort(function(a,b) {
         if(a.agegrade == '') { return +1 };
         if(a.parkrun !== b.parkrun) { if(a.parkrun < b.parkrun) {return -1} else if(a.parkrun > b.parkrun) {return +1} };
@@ -73,14 +73,14 @@ $( document ).ready(function() {
             if(result[i].Note =="New PB!"){pbclass="newpb"}else{pbclass="nopb"};
             if(result[i].agecatpos == 1) {ageCatPosClass="first-in-age-cat"}else{ageCatPosClass="normal-age-cat-pos"}
             if(result[i].genderpos == 1) {genderClass="first-in-gender"}else{genderClass="normal-gender-pos"}
-            if(result[i].TotalRuns == 50 || result[i].TotalRuns == 100 || result[i].TotalRuns == 200 ) {
+            if(result[i].TotalRuns == 50 || result[i].TotalRuns == 100 || result[i].TotalRuns == 150 || result[i].TotalRuns == 200 || result[i].TotalRuns == 250 || result[i].TotalRuns == 300 || result[i].TotalRuns == 350 ) {
               totalRunsClass="milestone-run"}else{totalRunsClass="not-milestone-run"}
 
             htmltoappend = htmltoappend + '<tr class="row">' + '<td>' + result[i].parkrun.split(" ")[0] + '</td><td>'+ result[i].parkrun.substr(result[i].parkrun.length-10) + '</td><td class="position">' + result[i].pos + '</td><td class="parkrunner">' + result[i].parkrunner + '</td>' + '<td class="time">' + result[i].time + '</td>' + '<td class="agecat">' + result[i].agecat + '</td>';
             htmltoappend = htmltoappend +  '<td class=' + ageCatPosClass + '>' + result[i].agecatpos + '</td>';
             htmltoappend = htmltoappend + '<td class="agegrade ' + ageCatClass +  '"">' + result[i].agegrade + '</td>'+ '<td class='+ agePosClass + '>'+ result[i].agegraderank + '</td>' + '<td id="gender">' + result[i].gender + '</td>' + '<td class="genderpos">' + result[i].genderpos + '</td>';
             htmltoappend = htmltoappend + '<td class="note ' + pbclass + '">' + result[i].Note + '</td>';
-            htmltoappend = htmltoappend + '<td class="totalruns">' + result[i].TotalRuns + '</th>' + '</tr>';
+            htmltoappend = htmltoappend + '<td class="' + totalRunsClass + ' totalruns">' + result[i].TotalRuns + '</th>' + '</tr>';
             }
           }
       }
