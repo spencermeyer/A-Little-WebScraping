@@ -43,6 +43,9 @@ a {
   display: inline-block;
   padding-left: 10px;
 }
+.milestone-run {
+  background-color: #99ccff;
+}
 #milestones{
   max-width: 90%;
 }

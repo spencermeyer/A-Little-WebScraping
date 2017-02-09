@@ -73,6 +73,8 @@ $( document ).ready(function() {
             if(result[i].Note =="New PB!"){pbclass="newpb"}else{pbclass="nopb"};
             if(result[i].agecatpos == 1) {ageCatPosClass="first-in-age-cat"}else{ageCatPosClass="normal-age-cat-pos"}
             if(result[i].genderpos == 1) {genderClass="first-in-gender"}else{genderClass="normal-gender-pos"}
+            if(result[i].TotalRuns == 50 || result[i].TotalRuns == 100 || result[i].TotalRuns == 200 ) {
+              totalRunsClass="milestone-run"}else{totalRunsClass="not-milestone-run"}
 
             htmltoappend = htmltoappend + '<tr class="row">' + '<td>' + result[i].parkrun.split(" ")[0] + '</td><td>'+ result[i].parkrun.substr(result[i].parkrun.length-10) + '</td><td class="position">' + result[i].pos + '</td><td class="parkrunner">' + result[i].parkrunner + '</td>' + '<td class="time">' + result[i].time + '</td>' + '<td class="agecat">' + result[i].agecat + '</td>';
             htmltoappend = htmltoappend +  '<td class=' + ageCatPosClass + '>' + result[i].agecatpos + '</td>';

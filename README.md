@@ -18,6 +18,7 @@ And here is a link to the website that gives advice about security in node.js:
 
 This application is deployed on openshift:
   http://parkcollector-systraph.rhcloud.com/
+I'm using openshift's deployent gem:  rhc to update the deployment.
 
 to run type:  node server.js or nodemon server.js   
 

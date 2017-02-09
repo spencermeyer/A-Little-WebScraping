@@ -142,16 +142,12 @@ var timerFunction0 = setTimeout(function(){
                 console.log('gonna kill child ', milestone.parkrunner, 'cos theyve done their ms');
               } 
             });
-
-
             // now go over entire milestones.json and cut out completed milestones.  :)
-
-
           }); // end of each element in table sortable
          }
          countsjson.push({ "runTitle" : runTitle, "numberOfEastleighMen" : numberOfEastleighMen[runTitle], "numberOfEastleighWomen" : numberOfEastleighWomen[runTitle], "numberOfMen": numberOfMen[runTitle], "numberOfWomen": numberOfWomen[runTitle] });
 
-         var waitABitAfterScrape  = setTimeout(function() {numberOfLinksScraped += 1;},500);
+         var waitABitAfterScrape  = setTimeout(function() {numberOfLinksScraped += 1;},700);
 
          console.log('And Number of links scraped is ', numberOfLinksScraped, 'requires', linksjson.length);
          console.log('and the data size is ', json.length);  
@@ -162,6 +158,7 @@ var timerFunction0 = setTimeout(function(){
   function sortAndGroomAndWrite(){
     if (numberOfLinksScraped < linksjson.length) { setTimeout(sortAndGroomAndWrite, 100) } else {
       var timerFunction1 = setTimeout(function(){
+        console.log('ENTERING SORT AND GROOM AND WRITE data size is;', json.length);
         json.sort(function(a,b) {
           if(a.agegrade == '') { return +1 };
           if(a.parkrun !== b.parkrun) { if(a.parkrun < b.parkrun) {return -1} else if(a.parkrun > b.parkrun) {return +1} };
@@ -214,11 +211,11 @@ var timerFunction0 = setTimeout(function(){
         assignAgeCategoryPlacePositions();
         function assignAgeCategoryPlacePositions(){
           if(!doneAssigningAgeGradePositions){setTimeout(assignAgeCategoryPlacePositions, 100)} else {
-            console.log('and now running assignAgeCategoryPlacePositions');
+            console.log('and now running assignAgeCategoryPlacePositions will now do by pos within age cat');
             json.sort(function(a,b) {
               if(textToNumber(a.parkrun) === textToNumber(b.parkrun)) {
                 if(textToNumber(a.agecat) === textToNumber(b.agecat)) {
-                  return (parseFloat(b.agegrade) - parseFloat(a.agegrade));
+                  return (parseFloat(b.pos) - parseFloat(a.pos));
                 } else {
                   return (textToNumber(a.agecat) - textToNumber(b.agecat));
                 }
