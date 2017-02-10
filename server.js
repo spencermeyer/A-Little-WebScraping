@@ -214,8 +214,8 @@ var timerFunction0 = setTimeout(function(){
             console.log('and now running assignAgeCategoryPlacePositions will now do by pos within age cat');
             json.sort(function(a,b) {
               if(textToNumber(a.parkrun) === textToNumber(b.parkrun)) {
-                if(textToNumber(a.agecat) === textToNumber(b.agecat)) {
-                  return (parseFloat(b.pos) - parseFloat(a.pos));
+                if(textToNumber(.agecat) === textToNumber(b.agecat)) {
+                  return (parseFloat(a.pos) - parseFloat(b.pos));
                 } else {
                   return (textToNumber(a.agecat) - textToNumber(b.agecat));
                 }
