@@ -88,7 +88,6 @@ var timerFunction0 = setTimeout(function(){
   var json =[], countsjson=[];  // agecats=[], agecatsall=[],
   var numberOfEastleighMen=[], numberOfMen=[];
   var numberOfEastleighWomen=[], numberOfWomen=[];
-  fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
   var options = {
       url : linksjson[0].website,
       headers: {
@@ -254,6 +253,7 @@ var timerFunction0 = setTimeout(function(){
         function saveTheData(){
           if(!doneAssigningAgeCatPositions) { setTimeout(saveTheData, 100) } else {
             console.log('****** WRITING FILES ******');
+
             fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
             fs.writeFileSync('public/counts.json', JSON.stringify(countsjson, null, 4));
             fs.writeFileSync('public/milestones.json', JSON.stringify(milestones, null, 4));
