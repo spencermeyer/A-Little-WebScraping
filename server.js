@@ -221,7 +221,7 @@ var timerFunction0 = setTimeout(function(){
               } else {
                 return (textToNumber(a.parkrun) - textToNumber(b.parkrun));
               }
-            }); 
+            });
             // ok now write in the age cat positions *****
             var waitABitAfterAgeCatSorting = setTimeout(function(){
               var placeCounter  = 1;
@@ -246,14 +246,11 @@ var timerFunction0 = setTimeout(function(){
           }
         }
 
-        // should be easy !!!!
-
         // STAGE 5: SAVE THE DATA
         saveTheData();
         function saveTheData(){
           if(!doneAssigningAgeCatPositions) { setTimeout(saveTheData, 100) } else {
             console.log('****** WRITING FILES ******');
-
             fs.writeFileSync('public/output.json', JSON.stringify(json, null, 4));
             fs.writeFileSync('public/counts.json', JSON.stringify(countsjson, null, 4));
             fs.writeFileSync('public/milestones.json', JSON.stringify(milestones, null, 4));
